@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"fmt"
+	"github.com/google/uuid"
 
 	_ "github.com/lib/pq"
 )
@@ -29,7 +30,6 @@ func CreateDatabase () *Database {
 
 	if err != nil {
 		panic(err)
-		return nil
 	}
 
 	database.database = db;
@@ -40,10 +40,37 @@ func CreateDatabase () *Database {
 
 // Create an application
 func (db *Database) CreateApplication (appName string) *Application {
-	return nil
+	var application *Application = &Application{
+		ID: uuid.New(), 
+		Name: appName,
+		Key: uuid.New(),
+	} 
+
+	var SQL string = "INSERT INTO Applications (ID, Name, Key) VALUES ($1, $2, $3)"
+
+	// Omit the result return
+	if _, err := db.database.Exec(SQL, application.ID, application.Name, application.Key); err != nil {
+		panic(err)
+	}
+
+	return application
 }
 
 // Create a user
-func (db *Database) CreateUser (user User) *User {
-	return nil
+func (db *Database) CreateUser (applicationID uuid.UUID, username string, password string) *User {
+	var user *User = &User{
+		ID: uuid.New(),
+		Username: username,
+		Password: password,
+		ApplicationID: applicationID,
+	}
+
+	var SQL string = "INSERT INTO Users (ID, ApplicationID, Username, Password) VALUES ($1, $2, $3, $4)"
+
+	// Omit the result return
+	if _, err := db.database.Exec(SQL, user.ID, user.ApplicationID, user.Username, user.Password); err != nil {
+		panic(err)
+	}
+
+	return user
 }
