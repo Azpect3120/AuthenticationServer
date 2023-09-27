@@ -33,7 +33,7 @@ func CreateDatabase () *Database {
 	}
 
 	database.database = db;
-	defer database.database.Close()
+	// defer database.database.Close()
 	return database
 }
 

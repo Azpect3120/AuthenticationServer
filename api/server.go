@@ -9,12 +9,12 @@ type Server struct {
 	port string
 }
 
-func CreateServer(port string) *Server {
+func CreateServer(port string, database Database) *Server {
 	server := &Server{
 		router: gin.Default(),
 		port: port,
 	}
-	server.LoadRoutes()
+	server.LoadRoutes(database)
 	return server
 }
 

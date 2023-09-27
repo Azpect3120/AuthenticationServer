@@ -1,0 +1,54 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "mahmud.db.elephantsql.com",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "ElephantSQL",
+            "database": "voedjqab",
+            "username": "voedjqab"
+        },
+        {
+            "previewLimit": 50,
+            "server": "mahmud.db.elephantsql.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "BLBS Database",
+            "database": "hmshbslo",
+            "username": "hmshbslo",
+            "password": "YyvLFj1UtYu99TwegfPHL54jTTpLgD5l"
+        },
+        {
+            "previewLimit": 50,
+            "server": "mahmud.db.elephantsql.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "File Storage Database",
+            "database": "smegszdi",
+            "username": "smegszdi",
+            "password": "rjs4NBKJ2wYeHrhLrbPWtMXJZg6BwG1o"
+        },
+        {
+            "previewLimit": 50,
+            "server": "mahmud.db.elephantsql.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "User Login API",
+            "database": "fdixyqtu",
+            "username": "fdixyqtu",
+            "password": "xpF9GLiiGVX4AKLchK-8G0q_M-6HSQGs"
+        },
+        {
+            "previewLimit": 50,
+            "server": "bubble.db.elephantsql.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Authentication Server",
+            "database": "cihrecbo",
+            "username": "cihrecbo",
+            "password": "u6hQwF7ceKcHeuu6I4uM4ewaE8MCJjqs"
+        }
+    ]
+}
