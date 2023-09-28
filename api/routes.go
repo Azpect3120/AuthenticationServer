@@ -2,42 +2,19 @@ package api
 
 import (
 	"net/http"
-//	"fmt"
 
 	"github.com/gin-gonic/gin"
+//	"github.com/google/uuid"
 )
 
 // Load routes in to the server
 func (server *Server) LoadRoutes (database Database) {
-	server.router.POST("/createApplication", func (ctx *gin.Context) { createApplication(ctx, database) })
-	server.router.POST("/createUser", func (ctx *gin.Context) { createUser(ctx, database) })
+	server.router.POST("/createApplication", func (c *gin.Context) { createApplication(c, database) })
+	server.router.POST("/createUser", func (c *gin.Context) { createUser(c, database) })
+	server.router.POST("/verifyUser", func(c *gin.Context) { verifyUser(c, database) })
 }
 
-// Request map: createApplication
-type CreateApplicationRequest struct {
-	Name	string		`json:"name"`
-}
-
-// Request map: createUser
-type CreateUserRequest struct {
-	ApplicationID	uuid.UUID	`json:"applicationID"`
-	Username		string		`json:"username"`
-	Password		string		`json:"password"`
-}
-
-/*
-	Creates a new application in the database
-
-	body: {
-		name: string
-	}
-	 
-	return: {
-		ID: uuid,
-		Name: string,
-		Key: uuid
-	}
-*/
+// Creates a new application in the database
 func createApplication (ctx *gin.Context, database Database) {
 	var appReq CreateApplicationRequest
 
@@ -51,22 +28,8 @@ func createApplication (ctx *gin.Context, database Database) {
 	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "application": &application })
 }
 
-/*
-	Create a new user in an application in the database
-
-	body: {
-		ApplicationID: uuid,
-		Username: string,
-		Password: string,
-	}
-
-	return: {
-		ID: uuid,
-		ApplicationID: uuid,
-		Username: string,
-		Password: string,
-	}
-*/
+// Create a new user in an application in the database
+// User the ApplicationID as a key
 func createUser (ctx *gin.Context, database Database) {
 	var userReq CreateUserRequest
 
@@ -75,7 +38,33 @@ func createUser (ctx *gin.Context, database Database) {
 		return
 	}
 
-	user := *database.CreateUser(userReq.applicationID, userReq.username, userReq.password)
+	hashedPassword, err := HashString(userReq.Password)
+
+	if err != nil {
+		panic(err)
+	}
+
+	user := *database.CreateUser(userReq.ApplicationID, userReq.Username, hashedPassword)
 
 	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": &user })
 }
+
+// Verify a user in the database
+// Require ApplicationID as a key
+/*
+	body: {
+		ApplicationID: string(uuid),
+		Username: string,
+		Password: string
+	}
+
+	return: {
+		ApplicationID: string(uuid)
+		ID: string(uuid)
+	}
+*/
+func verifyUser (ctx *gin.Context, database Database) {
+
+}
+
+

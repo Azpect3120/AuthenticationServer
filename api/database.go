@@ -43,13 +43,12 @@ func (db *Database) CreateApplication (appName string) *Application {
 	var application *Application = &Application{
 		ID: uuid.New(), 
 		Name: appName,
-		Key: uuid.New(),
 	} 
 
-	var SQL string = "INSERT INTO Applications (ID, Name, Key) VALUES ($1, $2, $3)"
+	var SQL string = "INSERT INTO Applications (ID, Name) VALUES ($1, $2)"
 
 	// Omit the result return
-	if _, err := db.database.Exec(SQL, application.ID, application.Name, application.Key); err != nil {
+	if _, err := db.database.Exec(SQL, application.ID, application.Name); err != nil {
 		panic(err)
 	}
 
@@ -73,4 +72,11 @@ func (db *Database) CreateUser (applicationID uuid.UUID, username string, passwo
 	}
 
 	return user
+}
+
+// Verify a username and password
+func (db *Database) VerifyUser (applicationID uuid.UUID, username string, password string) *User {
+	
+
+
 }

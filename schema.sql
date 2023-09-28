@@ -1,8 +1,7 @@
 -- @block
 CREATE TABLE IF NOT EXISTS Applications (
     ID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    Name TEXT UNIQUE,
-    Key UUID DEFAULT uuid_generate_v4()
+    Name TEXT UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS Users (
