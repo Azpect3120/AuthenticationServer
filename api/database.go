@@ -2,7 +2,9 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+
 	"github.com/google/uuid"
 
 	_ "github.com/lib/pq"
@@ -75,8 +77,41 @@ func (db *Database) CreateUser (applicationID uuid.UUID, username string, passwo
 }
 
 // Verify a username and password
-func (db *Database) VerifyUser (applicationID uuid.UUID, username string, password string) *User {
-	
+func (db *Database) VerifyUser (applicationID uuid.UUID, username string, password string) (*User, error) {
+	var SQL string = "SELECT ApplicationID, ID, password FROM users WHERE ApplicationID = $1 AND Username = $2";
 
+	rows, err := db.database.Query(SQL, applicationID, username)
 
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var (
+			ApplicationID uuid.UUID
+			ID uuid.UUID
+			Password string
+		)
+		if err := rows.Scan(&ApplicationID, &ID, &Password); err != nil {
+			return nil, err
+		}
+
+		valid, err := CompareString(password, Password)
+			
+		if err != nil {
+			return nil, err
+		}
+
+		if valid {
+			user := &User {
+				ID: ID,
+				ApplicationID: ApplicationID,
+				Username: username,
+				Password: Password,
+			}
+
+			return user, nil
+		}
+	}
+	return nil, errors.New("User was not verified") 
 }

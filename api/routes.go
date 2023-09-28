@@ -59,12 +59,24 @@ func createUser (ctx *gin.Context, database Database) {
 	}
 
 	return: {
-		ApplicationID: string(uuid)
-		ID: string(uuid)
+		ApplicationID: string(uuid) || nil
+		ID: string(uuid) || nil
 	}
 */
 func verifyUser (ctx *gin.Context, database Database) {
+	var verifyReq VerifyUserRequest
 
+	if err := ctx.ShouldBindJSON(&verifyReq); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+	}
+
+	user, err := database.VerifyUser(verifyReq.ApplicationID, verifyReq.Username, verifyReq.Password)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "user": &user })
+	}
 }
 
 
