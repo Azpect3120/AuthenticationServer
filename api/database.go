@@ -244,8 +244,48 @@ func (db *Database) SetUsername (applicationID uuid.UUID, userID uuid.UUID, newU
 	return nil, errors.New("The users username could not be changed.")
 }
 
-
-
-
-
 // Updates a users password
+func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newPassword string) (*User, error) {
+	var SQL string = "UPDATE Users SET Password = $1 WHERE ApplicationID = $2 AND ID = $3"
+
+	hashedPassword, err := HashString(newPassword)
+
+	if err != nil {
+		return nil, err
+	}
+
+	_, err2 := db.database.Exec(SQL, hashedPassword, applicationID, userID)
+
+	if err2 != nil {
+		return nil, err
+	}
+
+	SQL = "SELECT * FROM Users WHERE ApplicationID = $1 AND ID = $2"
+
+	rows, err := db.database.Query(SQL, applicationID, userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var (
+			ID uuid.UUID
+			ApplicationID uuid.UUID
+			Username string
+			Password string
+		)
+
+		rows.Scan(&ID, &ApplicationID, &Username, &Password)
+
+		user := &User{
+			ID: ID,
+			ApplicationID: ApplicationID,
+			Username: Username,
+			Password: Password,
+		}
+
+		return user, nil
+	}
+	return nil, errors.New("The users password could not be changed.")
+}

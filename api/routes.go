@@ -15,6 +15,7 @@ func (server *Server) LoadRoutes (database Database) {
 	server.router.GET("/getUser", func(c *gin.Context) { getUser(c, database) })
 	server.router.GET("/getUsers", func(c *gin.Context) { getUsers(c, database) })
 	server.router.POST("/setUsername", func(c *gin.Context) { setUsername(c, database) }) 
+	server.router.POST("/setPassword", func(c *gin.Context) { setPassword(c, database) }) 
 }
 
 // Creates a new application in the database
@@ -127,6 +128,25 @@ func setUsername (ctx *gin.Context, database Database) {
 	}
 
 	user, err := database.SetUsername(setRequest.ApplicationID, setRequest.ID, setRequest.Username)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })	
+	} else {
+		ctx.JSON(http.StatusCreated, gin.H{ "Status": 201, "User": user })
+	}
+}
+
+// Update a users password
+// Requires the ApplicationID and the UserID
+func setPassword (ctx *gin.Context, database Database) {
+	var setRequest SetPasswordRequest
+
+	if err := ctx.ShouldBindJSON(&setRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })
+		return
+	}
+
+	user, err := database.SetPassword(setRequest.ApplicationID, setRequest.ID, setRequest.Password)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })	

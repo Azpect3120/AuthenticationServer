@@ -41,3 +41,10 @@ type SetUsernameRequest struct {
 	ID				uuid.UUID	`json:"ID"`
 	Username		string		`json:"username"`
 }
+
+// Request map: /setPassword
+type SetPasswordRequest struct {
+	ApplicationID	uuid.UUID	`json:"applicationID"`
+	ID				uuid.UUID	`json:"ID"`
+	Password		string		`json:"password"`
+}
