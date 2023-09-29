@@ -12,6 +12,8 @@ func (server *Server) LoadRoutes (database Database) {
 	server.router.POST("/createApplication", func (c *gin.Context) { createApplication(c, database) })
 	server.router.POST("/createUser", func (c *gin.Context) { createUser(c, database) })
 	server.router.POST("/verifyUser", func(c *gin.Context) { verifyUser(c, database) })
+	server.router.GET("/getUser", func(c *gin.Context) { getUser(c, database) })
+	server.router.GET("/getUsers", func(c *gin.Context) { getUsers(c, database) })
 }
 
 // Creates a new application in the database
@@ -80,3 +82,34 @@ func verifyUser (ctx *gin.Context, database Database) {
 }
 
 
+// Get a user in the database
+// Requires the UserID and the ApplicationID
+// @param: app-id
+// @param: user-id
+func getUser (ctx *gin.Context, database Database) {
+	applicationID := ctx.DefaultQuery("app-id", "")
+	userID := ctx.DefaultQuery("user-id", "")
+	
+	user, err := database.GetUser(applicationID, userID)
+
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{ "Error": err.Error })
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{ "Status": 200, "User": user })
+	}
+}
+
+// Get all users stored in an application
+// Requires the ApplicationID
+// @param: app-id
+func getUsers (ctx *gin.Context, database Database) {
+	applicationId := ctx.DefaultQuery("app-id", "")
+
+	users, err := database.GetUsers(applicationId)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "Error": err.Error })
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{ "Status": 200, "Users": users })
+	}
+}

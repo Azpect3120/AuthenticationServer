@@ -115,3 +115,91 @@ func (db *Database) VerifyUser (applicationID uuid.UUID, username string, passwo
 	}
 	return nil, errors.New("User was not verified") 
 }
+
+// Get a user from the database using its ID
+func (db *Database) GetUser (applicationID string, userID string) (*User, error) {
+	var SQL = "SELECT * FROM users WHERE ApplicationID = $1 AND ID = $2"
+
+	appUUID, err := uuid.Parse(applicationID) 
+
+	if err != nil {
+		return nil, err
+	}
+
+	userUUID, err := uuid.Parse(userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := db.database.Query(SQL, appUUID, userUUID)
+	
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var (
+			ID uuid.UUID
+			ApplicationID uuid.UUID
+			Username string
+			Password string
+		)
+
+		if err := rows.Scan(&ID, &ApplicationID, &Username, &Password); err != nil {
+			return nil, err 
+		}
+
+		user := &User{
+			ApplicationID: ApplicationID,
+			ID: ID,
+			Username: Username,
+			Password: Password,
+		}
+
+		return user, nil
+	}
+	return nil, errors.New("User was not found") 
+}
+
+
+// Returns an array of users found in an application
+func (db *Database) GetUsers (applicationID string) ([]*User, error) {
+	var SQL string = "SELECT * FROM users WHERE ApplicationID = $1"
+
+	appUUID, err := uuid.Parse(applicationID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := db.database.Query(SQL, appUUID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	users := []*User{}
+
+	for rows.Next() {
+		var (
+			ID uuid.UUID
+			ApplicationID uuid.UUID
+			Username string
+			Password string
+		)
+
+		rows.Scan(&ID, &ApplicationID, &Username, &Password) 
+
+		user := &User{
+			ApplicationID: ApplicationID,
+			ID: ID,
+			Username: Username,
+			Password: Password,
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
