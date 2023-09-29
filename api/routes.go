@@ -14,6 +14,7 @@ func (server *Server) LoadRoutes (database Database) {
 	server.router.POST("/verifyUser", func(c *gin.Context) { verifyUser(c, database) })
 	server.router.GET("/getUser", func(c *gin.Context) { getUser(c, database) })
 	server.router.GET("/getUsers", func(c *gin.Context) { getUsers(c, database) })
+	server.router.POST("/setUsername", func(c *gin.Context) { setUsername(c, database) }) 
 }
 
 // Creates a new application in the database
@@ -70,6 +71,7 @@ func verifyUser (ctx *gin.Context, database Database) {
 
 	if err := ctx.ShouldBindJSON(&verifyReq); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
 	}
 
 	user, err := database.VerifyUser(verifyReq.ApplicationID, verifyReq.Username, verifyReq.Password)
@@ -111,5 +113,24 @@ func getUsers (ctx *gin.Context, database Database) {
 		ctx.JSON(http.StatusBadRequest, gin.H{ "Error": err.Error })
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{ "Status": 200, "Users": users })
+	}
+}
+
+// Update a users username
+// Requires the ApplicationID and the UserID
+func setUsername (ctx *gin.Context, database Database) {
+	var setRequest SetUsernameRequest	
+
+	if err := ctx.ShouldBindJSON(&setRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })
+		return
+	}
+
+	user, err := database.SetUsername(setRequest.ApplicationID, setRequest.ID, setRequest.Username)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })	
+	} else {
+		ctx.JSON(http.StatusCreated, gin.H{ "Status": 201, "User": user })
 	}
 }

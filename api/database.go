@@ -203,3 +203,49 @@ func (db *Database) GetUsers (applicationID string) ([]*User, error) {
 
 	return users, nil
 }
+
+// Updates a users username
+func (db *Database) SetUsername (applicationID uuid.UUID, userID uuid.UUID, newUsername string) (*User, error) {
+	var SQL string = "UPDATE Users SET Username = $1 WHERE ApplicationID = $2 AND ID = $3"
+
+	_, err := db.database.Exec(SQL, newUsername, applicationID, userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	SQL = "SELECT * FROM Users WHERE ApplicationID = $1 AND ID = $2"
+
+	rows, err := db.database.Query(SQL, applicationID, userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var (
+			ID uuid.UUID
+			ApplicationID uuid.UUID
+			Username string
+			Password string
+		)
+
+		rows.Scan(&ID, &ApplicationID, &Username, &Password)
+
+		user := &User{
+			ID: ID,
+			ApplicationID: ApplicationID,
+			Username: Username,
+			Password: Password,
+		}
+
+		return user, nil
+	}
+	return nil, errors.New("The users username could not be changed.")
+}
+
+
+
+
+
+// Updates a users password

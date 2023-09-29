@@ -34,3 +34,10 @@ type VerifyUserRequest struct {
 	Username		string		`json:"username"`
 	Password		string		`json:"password"`
 }
+
+// Request map: /setUsername
+type SetUsernameRequest struct {
+	ApplicationID	uuid.UUID	`json:"applicationID"`
+	ID				uuid.UUID	`json:"ID"`
+	Username		string		`json:"username"`
+}
