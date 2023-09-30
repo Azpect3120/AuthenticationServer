@@ -12,7 +12,7 @@ func main () {
 	if database != nil {
 		fmt.Println("SUCCESS!!!!")
 	}
-	
+
 	server := api.CreateServer("8080", *database);
 
 	server.Listen()

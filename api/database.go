@@ -35,7 +35,6 @@ func CreateDatabase () *Database {
 	}
 
 	database.database = db;
-	// defer database.database.Close()
 	return database
 }
 
@@ -288,4 +287,27 @@ func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newP
 		return user, nil
 	}
 	return nil, errors.New("The users password could not be changed.")
+}
+
+// Deletes a user from the database
+func (db *Database) DeleteUser (applicationID uuid.UUID, userID uuid.UUID) error {
+	var SQL string = "DELETE FROM Users WHERE ApplicationID = $1 AND ID = $2"
+
+	result, err := db.database.Exec(SQL, applicationID, userID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return errors.New("The user was not found")	
+	}
+
+	return nil
 }

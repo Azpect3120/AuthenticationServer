@@ -48,3 +48,9 @@ type SetPasswordRequest struct {
 	ID				uuid.UUID	`json:"ID"`
 	Password		string		`json:"password"`
 }
+
+// Request map: /deleteUser
+type DeleteUserReqest struct {
+	ApplicationID	uuid.UUID	`json:"applicationID"`	
+	ID				uuid.UUID   `json:"ID"`
+}

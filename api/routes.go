@@ -16,6 +16,7 @@ func (server *Server) LoadRoutes (database Database) {
 	server.router.GET("/getUsers", func(c *gin.Context) { getUsers(c, database) })
 	server.router.POST("/setUsername", func(c *gin.Context) { setUsername(c, database) }) 
 	server.router.POST("/setPassword", func(c *gin.Context) { setPassword(c, database) }) 
+	server.router.POST("/deleteUser", func(c *gin.Context) { deleteUser(c, database) })
 }
 
 // Creates a new application in the database
@@ -153,4 +154,24 @@ func setPassword (ctx *gin.Context, database Database) {
 	} else {
 		ctx.JSON(http.StatusCreated, gin.H{ "Status": 201, "User": user })
 	}
+}
+
+// Deletes a user from the database
+// Requires the ApplicationID and the UserID
+func deleteUser (ctx *gin.Context, database Database) {
+	var deleteRequest DeleteUserReqest
+
+	if err := ctx.ShouldBindJSON(&deleteRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })
+		return
+	}
+
+	err := database.DeleteUser(deleteRequest.ApplicationID, deleteRequest.ID)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })	
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{ "Status": 200, "Message": "User was deleted" })
+	}
+
 }
