@@ -268,7 +268,7 @@ Params:
 - `app-id` : The ID of the application you want to view the users of
   
 ```bash
-  /getUsera?app-id=0000000-0000-0000-00000000
+  /getUsers?app-id=0000000-0000-0000-00000000
 ```
 
 ## Contributing
