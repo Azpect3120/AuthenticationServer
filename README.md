@@ -13,7 +13,8 @@ A simple Go authentication server built with the Gin framework, PostgreSQL datab
   - [Create an Application](#create-an-application)
   - [Create a User](#create-a-user)
   - [Authenticate a User](#authenticate-a-user)
-  - [Updating Users](#updating-users)
+  - [Update a User](#update-a-user)
+  - [Delete a User](#delete-a-user)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -159,7 +160,7 @@ User was not verified
   }
 ```
 
-### <a id="updating-users"></a> Updating Users
+### <a id="update-a-user"></a> Update a User
 
 Once you have created users you can update their username and password using the respective post endpoints, `/setUsername` and `/setPassword`.
 
@@ -214,6 +215,35 @@ Password was not successfully updated
 
   }
 ```
+
+### <a id="delete-a-user"></a> Delete a User
+
+Finally, you can delete a user from an application by sending a post request to the `/deleteUser` endpoint.
+
+```json
+  {
+    "ApplicationID": "00000000-0000-0000-00000000",
+    "ID": "00000000-0000-0000-00000000",
+  }
+```
+
+Example responses: 
+
+User was successfully deleted
+```json
+  {
+
+  }
+```
+
+User was not successfully deleted
+```json
+  {
+
+  }
+```
+
+
 
 ## Contributing
 
