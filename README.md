@@ -10,6 +10,7 @@ A simple Go authentication server built with the Gin framework, PostgreSQL datab
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+  - WIPPPP
   - [Authentication](#authentication)
   - [User Registration](#user-registration)
   - [User Profile](#user-profile)
@@ -64,7 +65,11 @@ Your authentication server should now be running on `http://localhost:8080`.
 
 ## Usage
 
-### Authentication
+WIPPPPP
+
+
+
+
 
 To authenticate users, you can send a POST request to `/login` with the following JSON data:
 
@@ -81,3 +86,4 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 ## License
 
 The project is licensed under the **MIT License**
+## Usage
