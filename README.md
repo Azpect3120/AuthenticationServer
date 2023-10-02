@@ -182,11 +182,11 @@ Username was successfully updated
 ```json
   {
     "Status":  201,
-      "User: {
-        "ID": "00000000-0000-0000-00000000",
-        "username": "your-new-username-here",
-        "password": "your-hashed-password-here",
-        "applicationID": "00000000-0000-0000-00000000"
+    "User": {
+      "ID": "00000000-0000-0000-00000000",
+      "username": "your-new-username-here",
+      "password": "your-hashed-password-here",
+      "applicationID": "00000000-0000-0000-00000000"
     }
   }
 ```
@@ -214,11 +214,11 @@ Password was successfully updated
 ```json
   {
     "Status":  201,
-      "User: {
-        "ID": "00000000-0000-0000-00000000",
-        "username": "your-username-here",
-        "password": "your-new-hashed-password-here",
-        "applicationID": "00000000-0000-0000-00000000"
+    "User": {
+      "ID": "00000000-0000-0000-00000000",
+      "username": "your-username-here",
+      "password": "your-new-hashed-password-here",
+      "applicationID": "00000000-0000-0000-00000000"
     }
   }
 ```
@@ -226,8 +226,8 @@ Password was successfully updated
 Password was not successfully updated
 ```json
   { 
-    "status": 400,
-    "error": "The users password could not be changed."
+    "Status": 400,
+    "Error": "The users password could not be changed."
   }
 ```
 
@@ -247,7 +247,7 @@ Example responses:
 User was successfully deleted
 ```json
   {
-    "status": 200,
+    "Status": 200,
     "Message": "The user was deleted"
   }
 ```
@@ -255,8 +255,8 @@ User was successfully deleted
 User was not successfully deleted
 ```json
   { 
-    "status": 404,
-    "message": "The user was not found"
+    "Status": 404,
+    "Message": "The user was not found"
   }
 ```
 
