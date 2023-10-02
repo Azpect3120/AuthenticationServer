@@ -181,14 +181,21 @@ Example responses:
 Username was successfully updated
 ```json
   {
-
+    "Status":  201,
+      "User: {
+        "ID": "00000000-0000-0000-00000000",
+        "username": "your-new-username-here",
+        "password": "your-hashed-password-here",
+        "applicationID": "00000000-0000-0000-00000000"
+    }
   }
 ```
 
 Username was not successfully updated
 ```json
   {
-
+    "Status": 400,
+    "Error": "The users username could not be change."
   }
 ```
 
@@ -206,14 +213,21 @@ Example responses:
 Password was successfully updated
 ```json
   {
-
+    "Status":  201,
+      "User: {
+        "ID": "00000000-0000-0000-00000000",
+        "username": "your-username-here",
+        "password": "your-new-hashed-password-here",
+        "applicationID": "00000000-0000-0000-00000000"
+    }
   }
 ```
 
 Password was not successfully updated
 ```json
-  {
-
+  { 
+    "status": 400,
+    "error": "The users password could not be changed."
   }
 ```
 
@@ -233,14 +247,16 @@ Example responses:
 User was successfully deleted
 ```json
   {
-
+    "status": 200,
+    "Message": "The user was deleted"
   }
 ```
 
 User was not successfully deleted
 ```json
-  {
-
+  { 
+    "status": 404,
+    "message": "The user was not found"
   }
 ```
 
@@ -261,6 +277,20 @@ Params:
   /getUser?app-id=0000000-0000-0000-00000000&user-id=0000000-0000-0000-00000000
 ```
 
+Example response:
+
+```json
+  {
+    "Status": 200,
+    "User": {
+        "ID": "00000000-0000-0000-00000000",
+        "username": "a-username",
+        "password": "a-hashed-password",
+        "applicationID": "00000000-0000-0000-00000000"
+    }
+  }
+```
+
 `/getUsers`
 
 Params:
@@ -269,6 +299,28 @@ Params:
   
 ```bash
   /getUsers?app-id=0000000-0000-0000-00000000
+```
+
+Example response:
+
+```json
+  {
+    "Status": 200,
+    "Users": [
+      {
+        "ID": "00000000-0000-0000-00000000",
+        "username": "a-username-1",
+        "password": "a-hashed-password-1",
+        "applicationID": "00000000-0000-0000-00000000"
+      },
+      {
+        "ID": "00000000-0000-0000-00000000",
+        "username": "a-username-2",
+        "password": "a-hashed-password-2",
+        "applicationID": "00000000-0000-0000-00000000"
+      }
+    ]
+  }
 ```
 
 ## Contributing
