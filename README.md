@@ -178,12 +178,16 @@ Example responses:
 
 Username was successfully updated
 ```json
+  {
 
+  }
 ```
 
 Username was not successfully updated
 ```json
+  {
 
+  }
 ```
 
 `/setPassword`
@@ -199,12 +203,16 @@ Example responses:
 
 Password was successfully updated
 ```json
+  {
 
+  }
 ```
 
 Password was not successfully updated
 ```json
+  {
 
+  }
 ```
 
 ## Contributing
