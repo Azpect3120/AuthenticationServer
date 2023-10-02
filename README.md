@@ -72,6 +72,7 @@ All users are stored within an `application`, which means for new users you must
 ```
 
 Example response:
+NOTE: The `ID` returned by this request is very important! It will be REQUIRED to request any future data from the server (to ensure safety and security). So do not lose it!
 
 ```json
   {
@@ -81,8 +82,69 @@ Example response:
   }
 ```
 
+Once you have created an `application`, you are now set to begin creating and storing users!
+To create a user in your new application you can send a post request to the `/createUser` endpoint.
 
+The `ApplicationID` is the `ID` you were returned when you created an application.
+Passwords are stored securely in the database using various hashing methods, so there is no need to hash or encrypt the passwords on the front-end. Though if you are concerned, you may still consider using your own hashing or encryption on the front-end BEFORE sending data to the server.
 
+```json
+  {
+    "ApplicationID": "application-id-here",
+    "Username": "your-username-here",
+    "Password": "your-password-here"
+  }
+```
+
+Example response:
+NOTE: The `user.ID` and the `user.applicationID` should be saved for future use when updating the users information.
+
+```json
+  {
+    "status": 201,
+    "user": {
+      "ID": "00000000-0000-0000-00000000",
+      "username": "your-username-here",
+      "password": "your-hashed-password-here",
+      "applicationID": "00000000-0000-0000-00000000"
+    }
+  }
+```
+You have now created your first user in an application! The user will be stored securely in the database and can now be used to authenticate logins. To do this, you can send a post request to the `/verifyUser` endpoint. The password that you pass will be sent in plain text and will be compared to the hashed password stored in the database. It will not be stored in the database along the way to ensure security. If you are building your own front-end security, you will need to match the data sent to the server.
+
+```json
+  {
+    "ApplicationID": "application-id-here",
+    "Username": "your-username-here",
+    "Password": "your-password-here"
+  }
+```
+
+Example responses:
+NOTE: The password that is returned will still be hashed, to ensure no data leakage will occur.
+
+User was verified successfully
+
+```json
+  {
+    "status": 200,
+    "user": {
+      "ID": "00000000-0000-0000-00000000",
+      "username": "your-username-here",
+      "password": "your-hashed-password-here",
+      "applicationID": "00000000-0000-0000-00000000"
+    }
+  }
+```
+
+User was not verified
+
+```json
+  {
+    "status": 400,
+    "error": "User was not verified"
+  }
+```
 
 ## Contributing
 
