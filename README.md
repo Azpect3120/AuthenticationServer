@@ -10,7 +10,10 @@ A simple Go authentication server built with the Gin framework, PostgreSQL datab
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
-  - WIPPPP
+  - [Create an Application](#creating-an-application)
+  - [Create a User](#create-a-user)
+  - [Authenticate a User](#authenticate-a-user)
+  - []()
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -63,7 +66,7 @@ Your authentication server should now be running on `http://localhost:8080`.
 
 ## Usage
 
-### Creating an Application
+### Create an Application
 
 All users are stored within an `application`, which means for new users you must first create an application. To do this you can send a post request to the `/createApplication` endpoint.
 
@@ -85,7 +88,7 @@ NOTE: The `ID` returned by this request is very important! It will be REQUIRED t
   }
 ```
 
-### Creating a User
+### Create a User
 
 Once you have created an `application`, you are now set to begin creating and storing users!
 To create a user in your new application you can send a post request to the `/createUser` endpoint.
