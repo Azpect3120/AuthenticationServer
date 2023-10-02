@@ -70,6 +70,7 @@ All users are stored within an `application`, which means for new users you must
     "name": "your-app-name"
   }
 ```
+
 Example response:
 
 ```json
@@ -82,8 +83,6 @@ Example response:
 
 
 
-
-To authenticate users, you can send a POST request to `/login` with the following JSON data:
 
 ## Contributing
 
