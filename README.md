@@ -1,6 +1,6 @@
 # Go Authentication Server
 
-A simple Go authentication server built with the Gin framework, PostgreSQL database, and JWT (JSON Web Tokens) for user authentication.
+A simple Go authentication server built with the Gin framework, PostgreSQL database, and UUID-keys for user authentication.
 
 ## Table of Contents
 
