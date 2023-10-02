@@ -10,9 +10,9 @@ A simple Go authentication server built with the Gin framework, PostgreSQL datab
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
-  - [Create an Application](##creating-an-application)
-  - [Create a User](##create-a-user)
-  - [Authenticate a User](##authenticate-a-user)
+  - [Create an Application](#create-an-application)
+  - [Create a User](#create-a-user)
+  - [Authenticate a User](#authenticate-a-user)
   - []()
 - [Contributing](#contributing)
 - [License](#license)
@@ -66,7 +66,7 @@ Your authentication server should now be running on `http://localhost:8080`.
 
 ## Usage
 
-### Create an Application
+### <a id="create-an-application"></a> Create an Application
 
 All users are stored within an `application`, which means for new users you must first create an application. To do this you can send a post request to the `/createApplication` endpoint.
 
@@ -88,7 +88,7 @@ NOTE: The `ID` returned by this request is very important! It will be REQUIRED t
   }
 ```
 
-### Create a User
+### <a id="create-a-user"></a> Create a User
 
 Once you have created an `application`, you are now set to begin creating and storing users!
 To create a user in your new application you can send a post request to the `/createUser` endpoint.
@@ -120,7 +120,7 @@ NOTE: The `user.ID` and the `user.applicationID` should be saved for future use 
   }
 ```
 
-### Authenticate a User
+### <a id="authenticate-a-user"></a> Authenticate a User
 
 You have now created your first user in an application! The user will be stored securely in the database and can now be used to authenticate logins. To do this, you can send a post request to the `/verifyUser` endpoint. The password that you pass will be sent in plain text and will be compared to the hashed password stored in the database. It will not be stored in the database along the way to ensure security. If you are building your own front-end security, you will need to match the data sent to the server.
 
