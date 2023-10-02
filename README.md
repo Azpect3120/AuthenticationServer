@@ -13,6 +13,7 @@ A simple Go authentication server built with the Gin framework, PostgreSQL datab
   - [Create an Application](#create-an-application)
   - [Create a User](#create-a-user)
   - [Authenticate a User](#authenticate-a-user)
+  - [Updating Users](#updating-users)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -156,6 +157,54 @@ User was not verified
     "status": 400,
     "error": "User was not verified"
   }
+```
+
+### <a id="updating-users"></a> Updating Users
+
+Once you have created users you can update their username and password using the respective post endpoints, `/setUsername` and `/setPassword`.
+
+NOTE: No validation is done on the server side, so any password validation should be handled on the front-end
+
+`/setUsername`
+```json
+  {
+    "ApplicationID": "00000000-0000-0000-00000000",
+    "ID": "00000000-0000-0000-00000000",
+    "Username": "new-username-here"
+  }
+```
+
+Example responses: 
+
+Username was successfully updated
+```json
+
+```
+
+Username was not successfully updated
+```json
+
+```
+
+`/setPassword`
+```json
+  {
+    "ApplicationID": "00000000-0000-0000-00000000",
+    "ID": "00000000-0000-0000-00000000",
+    "Password": "new-password-here"
+  }
+```
+
+Example responses: 
+
+Password was successfully updated
+```json
+
+```
+
+Password was not successfully updated
+```json
+
 ```
 
 ## Contributing
