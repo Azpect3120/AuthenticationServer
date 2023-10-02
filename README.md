@@ -112,8 +112,8 @@ NOTE: The `user.ID` and the `user.applicationID` should be saved for future use 
 
 ```json
   {
-    "status": 201,
-    "user": {
+    "Status": 201,
+    "User": {
       "ID": "00000000-0000-0000-00000000",
       "username": "your-username-here",
       "password": "your-hashed-password-here",
@@ -142,8 +142,8 @@ User was verified successfully
 
 ```json
   {
-    "status": 200,
-    "user": {
+    "Status": 200,
+    "User": {
       "ID": "00000000-0000-0000-00000000",
       "username": "your-username-here",
       "password": "your-hashed-password-here",
@@ -156,8 +156,8 @@ User was not verified
 
 ```json
   {
-    "status": 400,
-    "error": "User was not verified"
+    "Status": 400,
+    "Error": "User was not verified"
   }
 ```
 
