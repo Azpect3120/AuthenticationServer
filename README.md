@@ -15,6 +15,7 @@ A simple Go authentication server built with the Gin framework, PostgreSQL datab
   - [Authenticate a User](#authenticate-a-user)
   - [Update a User](#update-a-user)
   - [Delete a User](#delete-a-user)
+  - [Get a User](#get-a-user)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -243,7 +244,32 @@ User was not successfully deleted
   }
 ```
 
+### <a id="get-a-user"></a> Get a User
 
+Now that you know how to create, update, delete, and verify users, you should know how to get the users. There are two ways, both which require the `ApplicationID`. Sending a get request to the `/getUser` endpoint will return a single user and sending a get request to the `/getUsers` endpoint will return a list of all the users in application.
+
+NOTE: It is best to not allow users to send requests to the `/getUsers` endpoint to prevent data leaks.
+
+`/getUser`
+
+Params:
+
+- `app-id` : The ID of the application the user was added into
+- `user-id` : The ID of the user you wish to delete
+
+```bash
+  /getUser?app-id=0000000-0000-0000-00000000&user-id=0000000-0000-0000-00000000
+```
+
+`/getUsers`
+
+Params:
+
+- `app-id` : The ID of the application you want to view the users of
+  
+```bash
+  /getUsera?app-id=0000000-0000-0000-00000000
+```
 
 ## Contributing
 
