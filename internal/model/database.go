@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 
 	_ "github.com/lib/pq"
 )
@@ -17,6 +18,10 @@ type Database struct {
 }
 
 func CreateDatabase () *Database {
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
+
 	db_host := os.Getenv("db_host")
 	db_port	:= os.Getenv("db_port")
 	db_user	:= os.Getenv("db_user")
