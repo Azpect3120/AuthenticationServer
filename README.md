@@ -66,7 +66,8 @@ Follow these steps to get the project up and running on your local machine.
 
 4. Build and run the server:
 ```bash
-  go run cmd/AuthenticationServer/main.go
+  go build -o ./bin/server cmd/authServer/main.go
+  ./bin/server
 ```
 Your authentication server should now be running on `http://localhost:8080`.
 
