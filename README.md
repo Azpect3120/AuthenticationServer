@@ -9,6 +9,7 @@ A simple Go authentication server built with the Gin framework, PostgreSQL datab
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+  - [Database](#database)
 - [Usage](#usage)
   - [Create an Application](#create-an-application)
   - [Create a User](#create-a-user)
@@ -65,6 +66,25 @@ Follow these steps to get the project up and running on your local machine.
   go run cmd/AuthenticationServer/main.go
 ```
 Your authentication server should now be running on `http://localhost:8080`.
+
+### Database
+
+Once the server is up and running you will need to connect to a PostgreSQL database. If you would like the code to work out of the box, you may copy the database schema provided below.
+
+```sql
+  CREATE TABLE IF NOT EXISTS Applications (
+      ID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      Name TEXT UNIQUE
+  );
+
+  CREATE TABLE IF NOT EXISTS Users (
+      ID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      ApplicationID UUID,
+      Username TEXT,
+      Password TEXT,
+      FOREIGN KEY (ApplicationID) REFERENCES Applications(ID)
+  );
+```
 
 ## Usage
 
