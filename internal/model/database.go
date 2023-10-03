@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"log"
 
 	"github.com/google/uuid"
-
 	_ "github.com/lib/pq"
 )
 
@@ -30,7 +30,7 @@ func CreateDatabase () *Database {
 	db, err := sql.Open("postgres", database.connectionString)
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	database.database = db;
@@ -39,7 +39,7 @@ func CreateDatabase () *Database {
 
 
 // Create an application
-func (db *Database) CreateApplication (appName string) *Application {
+func (db *Database) CreateApplication (appName string) (*Application, error) {
 	var application *Application = &Application{
 		ID: uuid.New(), 
 		Name: appName,
@@ -49,14 +49,14 @@ func (db *Database) CreateApplication (appName string) *Application {
 
 	// Omit the result return
 	if _, err := db.database.Exec(SQL, application.ID, application.Name); err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return application
+	return application, nil
 }
 
 // Create a user
-func (db *Database) CreateUser (applicationID uuid.UUID, username string, password string) *User {
+func (db *Database) CreateUser (applicationID uuid.UUID, username string, password string) (*User, error) {
 	var user *User = &User{
 		ID: uuid.New(),
 		Username: username,
@@ -68,10 +68,10 @@ func (db *Database) CreateUser (applicationID uuid.UUID, username string, passwo
 
 	// Omit the result return
 	if _, err := db.database.Exec(SQL, user.ID, user.ApplicationID, user.Username, user.Password); err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return user
+	return user, nil
 }
 
 // Verify a username and password
@@ -163,16 +163,24 @@ func (db *Database) GetUser (applicationID string, userID string) (*User, error)
 
 // Returns an array of users found in an application
 func (db *Database) GetUsers (applicationID string) ([]*User, error) {
-	var SQL string = "SELECT * FROM users WHERE ApplicationID = $1"
-
 	appUUID, err := uuid.Parse(applicationID)
-
 	if err != nil {
 		return nil, err
 	}
+	
+	var appCount int
 
+	var countSQL string = "SELECT COUNT(*) FROM Applications WHERE ID = $1"
+	if err := db.database.QueryRow(countSQL, appUUID).Scan(&appCount); err != nil {
+		return nil, err
+	}
+
+	if appCount == 0 {
+		return nil, errors.New("Application with the provided ID does not exist.")
+	}
+
+	var SQL string = "SELECT * FROM users WHERE ApplicationID = $1"
 	rows, err := db.database.Query(SQL, appUUID)
-
 	if err != nil {
 		return nil, err
 	}
@@ -204,6 +212,17 @@ func (db *Database) GetUsers (applicationID string) ([]*User, error) {
 
 // Updates a users username
 func (db *Database) SetUsername (applicationID uuid.UUID, userID uuid.UUID, newUsername string) (*User, error) {
+	var userCount int
+
+	var countSQL string = "SELECT COUNT(*) FROM Users WHERE ApplicationID = $1 AND ID = $2"
+	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
+		return nil, err
+	}
+
+	if userCount == 0 {
+		return nil, errors.New("A user with the provided ID and ApplicationID does not exists.")
+	}
+
 	var SQL string = "UPDATE Users SET Username = $1 WHERE ApplicationID = $2 AND ID = $3"
 
 	_, err := db.database.Exec(SQL, newUsername, applicationID, userID)
@@ -244,6 +263,17 @@ func (db *Database) SetUsername (applicationID uuid.UUID, userID uuid.UUID, newU
 
 // Updates a users password
 func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newPassword string) (*User, error) {
+	var userCount int
+
+	var countSQL string = "SELECT COUNT(*) FROM Users WHERE ApplicationID = $1 AND ID = $2"
+	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
+		return nil, err
+	}
+
+	if userCount == 0 {
+		return nil, errors.New("A user with the provided ID and ApplicationID does not exists.")
+	}
+
 	var SQL string = "UPDATE Users SET Password = $1 WHERE ApplicationID = $2 AND ID = $3"
 
 	hashedPassword, err := HashString(newPassword)
@@ -290,6 +320,17 @@ func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newP
 
 // Deletes a user from the database
 func (db *Database) DeleteUser (applicationID uuid.UUID, userID uuid.UUID) error {
+	var userCount int
+
+	var countSQL string = "SELECT COUNT(*) FROM Users WHERE ApplicationID = $1 AND ID = $2"
+	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
+		return err
+	}
+
+	if userCount == 0 {
+		return errors.New("A user with the provided ID and ApplicationID does not exists.")
+	}
+
 	var SQL string = "DELETE FROM Users WHERE ApplicationID = $1 AND ID = $2"
 
 	result, err := db.database.Exec(SQL, applicationID, userID)
