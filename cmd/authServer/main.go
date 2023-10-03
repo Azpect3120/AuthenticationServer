@@ -1,6 +1,9 @@
 package main
 
-import "github.com/Azpect3120/AuthenticationServer/internal/model"
+import (
+	"github.com/Azpect3120/AuthenticationServer/internal/model"
+	"github.com/joho/godotenv"
+)
 
 func main () {
 	var database *model.Database = model.CreateDatabase();
@@ -9,7 +12,12 @@ func main () {
 		panic("Database connection failure")
 	}
 
-	server := model.CreateServer("8080", *database);
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	server := model.CreateServer(port, *database);
 
 	server.Listen()
 }
