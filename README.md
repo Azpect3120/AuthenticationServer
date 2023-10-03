@@ -22,7 +22,7 @@ A simple Go authentication server built with the Gin framework, PostgreSQL datab
 
 ## Introduction
 
-This project provides a basic template for building a Go authentication server. It includes routes for user login, registration, and profile retrieval, all secured with UUID keys/ids and secrets keys. You can use this template as a starting point to create your own authentication system for web applications. Or you can connect to a live server running this application. Instructions for using the live server can be found below.
+This project provides a basic template for building a Go authentication server. It includes routes for user login, registration, and profile retrieval, all secured with UUID keys/ids and secrets keys. You can use this template as a starting point to create your own authentication system for web applications.
 
 ## Features
 
