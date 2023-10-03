@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	db_host		= "bubble.db.elephantsql.com"
+	db_host		= ""
 	db_port		= 5432
-	db_user		= "cihrecbo"
-	db_password	= "u6hQwF7ceKcHeuu6I4uM4ewaE8MCJjqs"
-	db_name		= "cihrecbo"	
+	db_user		= ""
+	db_password	= ""
+	db_name		= ""	
 )
 
 type Database struct {
