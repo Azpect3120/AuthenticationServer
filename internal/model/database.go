@@ -1,22 +1,15 @@
 package model
 
-
 import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"os"
 
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 
 	_ "github.com/lib/pq"
-)
-
-const (
-	db_host		= ""
-	db_port		= 5432
-	db_user		= ""
-	db_password	= ""
-	db_name		= ""	
 )
 
 type Database struct {
@@ -25,8 +18,18 @@ type Database struct {
 }
 
 func CreateDatabase () *Database {
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
+
+	db_host := os.Getenv("db_host")
+	db_port	:= os.Getenv("db_port")
+	db_user	:= os.Getenv("db_user")
+	db_password	:= os.Getenv("db_password")
+	db_name := os.Getenv("db_name")
+
 	database := &Database {
-		connectionString: fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", db_host, db_port, db_user, db_password, db_name),
+		connectionString: fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", db_host, db_port, db_user, db_password, db_name),
 	}
 
 	db, err := sql.Open("postgres", database.connectionString)

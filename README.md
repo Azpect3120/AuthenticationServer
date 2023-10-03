@@ -50,10 +50,13 @@ Follow these steps to get the project up and running on your local machine.
     git clone https://github.com/yourusername/go-authentication-server.git
 ``` 
 
-2. Set up your PostgreSQL database and configure the connection string in the `cmd/authServer/main.go` file:
-```go
-  // Replace with your PostgreSQL connection string.
-  connectionString := "postgresql://username:password@localhost/dbname"
+2. Set up your PostgreSQL database and configure the connection details in the `.env` file:
+```.env
+  db_host=db-host-here
+  db_port=db-port-here
+  db_user=db-username-here
+  db_password=db-password-here
+  db_name=db-table-name-here
 ```
 
 3. Install dependencies:
