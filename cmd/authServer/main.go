@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/Azpect3120/AuthenticationServer/internal/model"
-	"github.com/joho/godotenv"
+	"os"
 )
 
 func main () {
