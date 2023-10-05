@@ -34,7 +34,6 @@ func (server *Server) loadCORS () {
 			c.AbortWithStatus(204)
 			return
 		}
-
 		c.Next()
 	})
 }
