@@ -76,16 +76,15 @@ Your authentication server should now be running on `http://localhost:8080`.
 Once the server is up and running you will need to connect to a PostgreSQL database. If you would like the code to work out of the box, you may copy the database schema provided below.
 
 ```sql
-  CREATE TABLE IF NOT EXISTS Applications (
-      ID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-      Name TEXT UNIQUE
+  CREATE TABLE IF NOT EXISTS applications (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      name TEXT
   );
-
   CREATE TABLE IF NOT EXISTS Users (
-      ID UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-      ApplicationID UUID,
-      Username TEXT,
-      Password TEXT,
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      applicationID UUID,
+      username TEXT,
+      password TEXT,
       FOREIGN KEY (ApplicationID) REFERENCES Applications(ID)
   );
 ```
