@@ -27,7 +27,12 @@ func createApplication (ctx *gin.Context, database Database) {
 		return
 	}
 
-	application := *database.CreateApplication(appReq.Name)
+	application, err := database.CreateApplication(appReq.Name)
+	 
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{ "status": 500, "error": err.Error() })
+		return
+	}
 
 	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "application": &application })
 }
@@ -48,7 +53,11 @@ func createUser (ctx *gin.Context, database Database) {
 		panic(err)
 	}
 
-	user := *database.CreateUser(userReq.ApplicationID, userReq.Username, hashedPassword)
+	user, err := database.CreateUser(userReq.ApplicationID, userReq.Username, hashedPassword)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{ "status": 500, "error": err.Error() })
+	}
 
 	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": &user })
 }
@@ -90,15 +99,15 @@ func verifyUser (ctx *gin.Context, database Database) {
 // @param: app-id
 // @param: user-id
 func getUser (ctx *gin.Context, database Database) {
-	applicationID := ctx.DefaultQuery("app-id", "")
-	userID := ctx.DefaultQuery("user-id", "")
+	var applicationID string = ctx.DefaultQuery("app-id", "")
+	var userID string = ctx.DefaultQuery("user-id", "")
 	
 	user, err := database.GetUser(applicationID, userID)
 
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{ "Error": err.Error })
+		ctx.JSON(http.StatusNotFound, gin.H{ "error": err.Error() })
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{ "Status": 200, "User": user })
+		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "user": user })
 	}
 }
 
@@ -111,9 +120,9 @@ func getUsers (ctx *gin.Context, database Database) {
 	users, err := database.GetUsers(applicationId)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "Error": err.Error })
+		ctx.JSON(http.StatusBadRequest, gin.H{ "error": err.Error() })
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{ "Status": 200, "Users": users })
+		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "users": users })
 	}
 }
 
@@ -123,16 +132,16 @@ func setUsername (ctx *gin.Context, database Database) {
 	var setRequest SetUsernameRequest	
 
 	if err := ctx.ShouldBindJSON(&setRequest); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
 		return
 	}
 
 	user, err := database.SetUsername(setRequest.ApplicationID, setRequest.ID, setRequest.Username)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })	
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })	
 	} else {
-		ctx.JSON(http.StatusCreated, gin.H{ "Status": 201, "User": user })
+		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": user })
 	}
 }
 
@@ -142,16 +151,16 @@ func setPassword (ctx *gin.Context, database Database) {
 	var setRequest SetPasswordRequest
 
 	if err := ctx.ShouldBindJSON(&setRequest); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
 		return
 	}
 
 	user, err := database.SetPassword(setRequest.ApplicationID, setRequest.ID, setRequest.Password)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })	
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })	
 	} else {
-		ctx.JSON(http.StatusCreated, gin.H{ "Status": 201, "User": user })
+		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": user })
 	}
 }
 
@@ -161,16 +170,16 @@ func deleteUser (ctx *gin.Context, database Database) {
 	var deleteRequest DeleteUserReqest
 
 	if err := ctx.ShouldBindJSON(&deleteRequest); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
 		return
 	}
 
 	err := database.DeleteUser(deleteRequest.ApplicationID, deleteRequest.ID)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "Status": 400, "Error": err.Error() })	
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })	
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{ "Status": 200, "Message": "User was deleted" })
+		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "message": "User was deleted" })
 	}
 
 }
