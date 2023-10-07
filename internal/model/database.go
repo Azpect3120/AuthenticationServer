@@ -63,6 +63,18 @@ func (db *Database) CreateApplication (appName string) (*Application, error) {
 
 // Create a user
 func (db *Database) CreateUser (applicationID uuid.UUID, username string, password string) (*User, error) {
+	var applicationCount int
+
+	var countSQL string = "SELECT COUNT(*) FROM applications WHERE ID = $1"
+	if err := db.database.QueryRow(countSQL, applicationID).Scan(&applicationCount); err != nil {
+		return nil, err
+	}
+
+
+	if applicationCount == 0 {
+		return nil, errors.New("Invalid applicationID.")
+	}
+
 	var user *User = &User{
 		ID: uuid.New(),
 		Username: username,

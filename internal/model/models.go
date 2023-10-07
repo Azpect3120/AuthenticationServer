@@ -1,6 +1,10 @@
 package model
 
-import "github.com/google/uuid"
+import (
+	"errors"
+	"reflect"
+	"github.com/google/uuid"
+)
 
 // Database table: Users
 type User struct {
@@ -54,3 +58,39 @@ type DeleteUserReqest struct {
 	ApplicationID	uuid.UUID	`json:"applicationID"`	
 	ID				uuid.UUID   `json:"ID"`
 }
+
+// Validates a struct to ensure nothing is blank
+func Validate (s interface{}) error {
+	// Get type of interface passed
+	sType := reflect.ValueOf(s)
+
+	// Convert pointer types to values
+	if sType.Kind() == reflect.Ptr {
+		sType = sType.Elem()
+	}
+
+	// Ensure the interface is a struct/pStruct
+	if sType.Kind() != reflect.Struct {
+		return errors.New("Input is not a struct or pointer to a struct")
+	}
+	
+	// Iterate over each field in the struct
+	for i := 0; i < sType.NumField(); i++ {
+		// Get each field and type
+		f := sType.Field(i)
+		fType := f.Type()
+		fName := sType.Type().Field(i).Name
+
+
+		// Check if field is an empty pointer
+		if fType.Kind() == reflect.Ptr && f.IsNil() {
+			return errors.New("Field '" + fName + "' is nil")
+		}
+
+		// Check if field is an empty string 
+		if fType.Kind() == reflect.String && f.String() == "" {
+			return errors.New("Field '" + fName + "' is an empty string")
+		}
+	}
+	return nil
+} 

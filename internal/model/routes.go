@@ -27,6 +27,11 @@ func createApplication (ctx *gin.Context, database Database) {
 		return
 	}
 
+	if err := Validate(appReq); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
+	}
+
 	application, err := database.CreateApplication(appReq.Name)
 	 
 	if err != nil {
@@ -47,16 +52,23 @@ func createUser (ctx *gin.Context, database Database) {
 		return
 	}
 
+	if err := Validate(userReq); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
+	}
+
 	hashedPassword, err := HashString(userReq.Password)
 
 	if err != nil {
-		panic(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
 	}
 
 	user, err := database.CreateUser(userReq.ApplicationID, userReq.Username, hashedPassword)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{ "status": 500, "error": err.Error() })
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": &user })
@@ -80,6 +92,11 @@ func verifyUser (ctx *gin.Context, database Database) {
 	var verifyReq VerifyUserRequest
 
 	if err := ctx.ShouldBindJSON(&verifyReq); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
+	}
+
+	if err := Validate(verifyReq); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
 		return
 	}
@@ -136,6 +153,11 @@ func setUsername (ctx *gin.Context, database Database) {
 		return
 	}
 
+	if err := Validate(setRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
+	}
+
 	user, err := database.SetUsername(setRequest.ApplicationID, setRequest.ID, setRequest.Username)
 
 	if err != nil {
@@ -170,6 +192,11 @@ func deleteUser (ctx *gin.Context, database Database) {
 	var deleteRequest DeleteUserReqest
 
 	if err := ctx.ShouldBindJSON(&deleteRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
+	}
+
+	if err := Validate(deleteRequest); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
 		return
 	}
