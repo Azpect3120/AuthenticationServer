@@ -8,11 +8,11 @@ import (
 
 // Load routes in to the server
 func (server *Server) LoadRoutes (database Database) {
+	server.router.GET("/getUser", func(c *gin.Context) { getUser(c, database) })
+	server.router.GET("/getUsers", func(c *gin.Context) { getUsers(c, database) })
 	server.router.POST("/createApplication", func (c *gin.Context) { createApplication(c, database) })
 	server.router.POST("/createUser", func (c *gin.Context) { createUser(c, database) })
 	server.router.POST("/verifyUser", func(c *gin.Context) { verifyUser(c, database) })
-	server.router.GET("/getUser", func(c *gin.Context) { getUser(c, database) })
-	server.router.GET("/getUsers", func(c *gin.Context) { getUsers(c, database) })
 	server.router.POST("/setUsername", func(c *gin.Context) { setUsername(c, database) }) 
 	server.router.POST("/setPassword", func(c *gin.Context) { setPassword(c, database) }) 
 	server.router.POST("/deleteUser", func(c *gin.Context) { deleteUser(c, database) })
@@ -35,7 +35,7 @@ func createApplication (ctx *gin.Context, database Database) {
 	application, err := database.CreateApplication(appReq.Name)
 	 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{ "status": 500, "error": err.Error() })
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
 		return
 	}
 
@@ -64,10 +64,10 @@ func createUser (ctx *gin.Context, database Database) {
 		return
 	}
 
-	user, err := database.CreateUser(userReq.ApplicationID, userReq.Username, hashedPassword)
+	user, e := database.CreateUser(userReq.ApplicationID, userReq.Username, hashedPassword)
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+	if e != nil {
+		ctx.JSON(e.Status, gin.H{ "status": e.Status, "error": e.Message })
 		return
 	}
 
@@ -104,7 +104,7 @@ func verifyUser (ctx *gin.Context, database Database) {
 	user, err := database.VerifyUser(verifyReq.ApplicationID, verifyReq.Username, verifyReq.Password)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "user": &user })
 	}
@@ -122,7 +122,7 @@ func getUser (ctx *gin.Context, database Database) {
 	user, err := database.GetUser(applicationID, userID)
 
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{ "error": err.Error() })
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "user": user })
 	}
@@ -137,7 +137,7 @@ func getUsers (ctx *gin.Context, database Database) {
 	users, err := database.GetUsers(applicationId)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "error": err.Error() })
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "users": users })
 	}
@@ -161,7 +161,7 @@ func setUsername (ctx *gin.Context, database Database) {
 	user, err := database.SetUsername(setRequest.ApplicationID, setRequest.ID, setRequest.Username)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })	
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })	
 	} else {
 		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": user })
 	}
@@ -180,7 +180,7 @@ func setPassword (ctx *gin.Context, database Database) {
 	user, err := database.SetPassword(setRequest.ApplicationID, setRequest.ID, setRequest.Password)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })	
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })	
 	} else {
 		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": user })
 	}
@@ -204,7 +204,7 @@ func deleteUser (ctx *gin.Context, database Database) {
 	err := database.DeleteUser(deleteRequest.ApplicationID, deleteRequest.ID)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })	
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })	
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "message": "User was deleted" })
 	}

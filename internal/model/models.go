@@ -6,6 +6,12 @@ import (
 	"github.com/google/uuid"
 )
 
+// Error: Error struct
+type Error struct {
+	Message			string		`json:"error"`
+	Status			int			`json:"status"`
+}
+
 // Database table: Users
 type User struct {
 	ID				uuid.UUID   `json:"ID"` 
