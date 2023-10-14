@@ -47,7 +47,7 @@ Follow these steps to get the project up and running on your local machine.
 1. Clone the repository (if you haven't already):
 
 ```bash
-    git clone https://github.com/yourusername/go-authentication-server.git
+    git clone https://github.com/Azpect3120/AuthenticationServer.git
 ``` 
 
 2. Set up your PostgreSQL database and configure the connection details in the `.env` file:
