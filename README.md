@@ -80,6 +80,7 @@ Once the server is up and running you will need to connect to a PostgreSQL datab
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       name TEXT
   );
+
   CREATE TABLE IF NOT EXISTS Users (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       applicationID UUID,
@@ -123,9 +124,9 @@ Passwords are stored securely in the database using various hashing methods, so 
 
 ```json
   {
-    "ApplicationID": "application-id-here",
-    "Username": "your-username-here",
-    "Password": "your-password-here"
+    "applicationID": "application-id-here",
+    "username": "your-username-here",
+    "password": "your-password-here"
   }
 ```
 
@@ -135,8 +136,8 @@ NOTE: The `user.ID` and the `user.applicationID` should be saved for future use 
 
 ```json
   {
-    "Status": 201,
-    "User": {
+    "status": 201,
+    "user": {
       "ID": "00000000-0000-0000-00000000",
       "username": "your-username-here",
       "password": "your-hashed-password-here",
@@ -151,9 +152,9 @@ You have now created your first user in an application! The user will be stored 
 
 ```json
   {
-    "ApplicationID": "application-id-here",
-    "Username": "your-username-here",
-    "Password": "your-password-here"
+    "applicationID": "application-id-here",
+    "username": "your-username-here",
+    "password": "your-password-here"
   }
 ```
 
@@ -165,8 +166,8 @@ User was verified successfully
 
 ```json
   {
-    "Status": 200,
-    "User": {
+    "status": 200,
+    "user": {
       "ID": "00000000-0000-0000-00000000",
       "username": "your-username-here",
       "password": "your-hashed-password-here",
@@ -179,8 +180,8 @@ User was not verified
 
 ```json
   {
-    "Status": 400,
-    "Error": "User was not verified"
+    "status": 400,
+    "error": "User was not verified"
   }
 ```
 
@@ -193,9 +194,9 @@ NOTE: No validation is done on the server side, so any password validation shoul
 `/setUsername`
 ```json
   {
-    "ApplicationID": "00000000-0000-0000-00000000",
+    "applicationID": "00000000-0000-0000-00000000",
     "ID": "00000000-0000-0000-00000000",
-    "Username": "new-username-here"
+    "username": "new-username-here"
   }
 ```
 
@@ -204,8 +205,8 @@ Example responses:
 Username was successfully updated
 ```json
   {
-    "Status":  201,
-    "User": {
+    "status":  201,
+    "user": {
       "ID": "00000000-0000-0000-00000000",
       "username": "your-new-username-here",
       "password": "your-hashed-password-here",
@@ -217,17 +218,17 @@ Username was successfully updated
 Username was not successfully updated
 ```json
   {
-    "Status": 400,
-    "Error": "The users username could not be change."
+    "status": 400,
+    "error": "The users username could not be change."
   }
 ```
 
 `/setPassword`
 ```json
   {
-    "ApplicationID": "00000000-0000-0000-00000000",
+    "applicationID": "00000000-0000-0000-00000000",
     "ID": "00000000-0000-0000-00000000",
-    "Password": "new-password-here"
+    "password": "new-password-here"
   }
 ```
 
@@ -236,8 +237,8 @@ Example responses:
 Password was successfully updated
 ```json
   {
-    "Status":  201,
-    "User": {
+    "status":  201,
+    "user": {
       "ID": "00000000-0000-0000-00000000",
       "username": "your-username-here",
       "password": "your-new-hashed-password-here",
@@ -249,8 +250,8 @@ Password was successfully updated
 Password was not successfully updated
 ```json
   { 
-    "Status": 400,
-    "Error": "The users password could not be changed."
+    "status": 400,
+    "error": "The users password could not be changed."
   }
 ```
 
@@ -260,7 +261,7 @@ Finally, you can delete a user from an application by sending a post request to 
 
 ```json
   {
-    "ApplicationID": "00000000-0000-0000-00000000",
+    "applicationID": "00000000-0000-0000-00000000",
     "ID": "00000000-0000-0000-00000000",
   }
 ```
@@ -270,16 +271,16 @@ Example responses:
 User was successfully deleted
 ```json
   {
-    "Status": 200,
-    "Message": "The user was deleted"
+    "status": 200,
+    "message": "The user was deleted"
   }
 ```
 
 User was not successfully deleted
 ```json
   { 
-    "Status": 404,
-    "Message": "The user was not found"
+    "status": 404,
+    "message": "The user was not found"
   }
 ```
 
@@ -300,17 +301,28 @@ Params:
   /getUser?app-id=0000000-0000-0000-00000000&user-id=0000000-0000-0000-00000000
 ```
 
-Example response:
+Example responses:
+
+User was found
 
 ```json
   {
-    "Status": 200,
-    "User": {
+    "status": 200,
+    "user": {
         "ID": "00000000-0000-0000-00000000",
         "username": "a-username",
         "password": "a-hashed-password",
         "applicationID": "00000000-0000-0000-00000000"
     }
+  }
+```
+
+No user was found
+
+```json
+  {
+    "status": 404,
+    "error": "User was not found."
   }
 ```
 
@@ -324,12 +336,14 @@ Params:
   /getUsers?app-id=0000000-0000-0000-00000000
 ```
 
-Example response:
+Example responses:
+
+Provided `applicationID` exists
 
 ```json
   {
-    "Status": 200,
-    "Users": [
+    "status": 200,
+    "users": [
       {
         "ID": "00000000-0000-0000-00000000",
         "username": "a-username-1",
@@ -345,6 +359,16 @@ Example response:
     ]
   }
 ```
+Provided `applicationID` does not exist
+
+```json
+  {
+    "status": 404,
+    "error": "Application with the provided ID does not exist."
+  }
+```
+
+
 
 ## Contributing
 
