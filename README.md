@@ -94,7 +94,7 @@ Once the server is up and running you will need to connect to a PostgreSQL datab
 
 ### <a id="create-an-application"></a> Create an Application
 
-All users are stored within an `application`, which means for new users you must first create an application. To do this you can send a post request to the `/createApplication` endpoint.
+All users are stored within an `application`, which means for new users you must first create an application. To do this you can send a post request to the `/applications/create` endpoint.
 
 ```json
   {
@@ -117,7 +117,7 @@ NOTE: The `ID` returned by this request is very important! It will be REQUIRED t
 ### <a id="create-a-user"></a> Create a User
 
 Once you have created an `application`, you are now set to begin creating and storing users!
-To create a user in your new application you can send a post request to the `/createUser` endpoint.
+To create a user in your new application you can send a post request to the `/users/create` endpoint.
 
 The `ApplicationID` is the `ID` you were returned when you created an application.
 Passwords are stored securely in the database using various hashing methods, so there is no need to hash or encrypt the passwords on the front-end. Though if you are concerned, you may still consider using your own hashing or encryption on the front-end BEFORE sending data to the server.
@@ -148,7 +148,7 @@ NOTE: The `user.ID` and the `user.applicationID` should be saved for future use 
 
 ### <a id="authenticate-a-user"></a> Authenticate a User
 
-You have now created your first user in an application! The user will be stored securely in the database and can now be used to authenticate logins. To do this, you can send a post request to the `/verifyUser` endpoint. The password that you pass will be sent in plain text and will be compared to the hashed password stored in the database. It will not be stored in the database along the way to ensure security. If you are building your own front-end security, you will need to match the data sent to the server.
+You have now created your first user in an application! The user will be stored securely in the database and can now be used to authenticate logins. To do this, you can send a post request to the `/users/verify` endpoint. The password that you pass will be sent in plain text and will be compared to the hashed password stored in the database. It will not be stored in the database along the way to ensure security. If you are building your own front-end security, you will need to match the data sent to the server.
 
 ```json
   {
@@ -187,11 +187,11 @@ User was not verified
 
 ### <a id="update-a-user"></a> Update a User
 
-Once you have created users you can update their username and password using the respective post endpoints, `/setUsername` and `/setPassword`.
+Once you have created users you can update their username and password using the respective post endpoints, `/users/username` and `/users/password`.
 
 NOTE: No validation is done on the server side, so any password validation should be handled on the front-end
 
-`/setUsername`
+`/users/username`
 ```json
   {
     "applicationID": "00000000-0000-0000-00000000",
@@ -223,7 +223,7 @@ Username was not successfully updated
   }
 ```
 
-`/setPassword`
+`/users/password`
 ```json
   {
     "applicationID": "00000000-0000-0000-00000000",
@@ -257,7 +257,7 @@ Password was not successfully updated
 
 ### <a id="delete-a-user"></a> Delete a User
 
-Finally, you can delete a user from an application by sending a post request to the `/deleteUser` endpoint.
+Finally, you can delete a user from an application by sending a post request to the `/users/delete` endpoint.
 
 ```json
   {
@@ -286,11 +286,11 @@ User was not successfully deleted
 
 ### <a id="get-a-user"></a> Get a User
 
-Now that you know how to create, update, delete, and verify users, you should know how to get the users. There are two ways, both which require the `ApplicationID`. Sending a get request to the `/getUser` endpoint will return a single user and sending a get request to the `/getUsers` endpoint will return a list of all the users in application.
+Now that you know how to create, update, delete, and verify users, you should know how to get the users. There are two ways, both which require the `ApplicationID`. Sending a get request to the `/users` endpoint will return a single user and sending a get request to the `/applications/users` endpoint will return a list of all the users in application.
 
-NOTE: It is best to not allow users to send requests to the `/getUsers` endpoint to prevent data leaks.
+NOTE: It is best to not allow users to send requests to the `/application/users` endpoint to prevent data leaks.
 
-`/getUser`
+`/users`
 
 Params:
 
@@ -326,7 +326,7 @@ No user was found
   }
 ```
 
-`/getUsers`
+`/application/users`
 
 Params:
 
