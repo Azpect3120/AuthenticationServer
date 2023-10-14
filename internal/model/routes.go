@@ -8,14 +8,15 @@ import (
 
 // Load routes in to the server
 func (server *Server) LoadRoutes (database Database) {
-	server.router.GET("/getUser", func(c *gin.Context) { getUser(c, database) })
-	server.router.GET("/getUsers", func(c *gin.Context) { getUsers(c, database) })
-	server.router.POST("/createApplication", func (c *gin.Context) { createApplication(c, database) })
-	server.router.POST("/createUser", func (c *gin.Context) { createUser(c, database) })
-	server.router.POST("/verifyUser", func(c *gin.Context) { verifyUser(c, database) })
-	server.router.POST("/setUsername", func(c *gin.Context) { setUsername(c, database) }) 
-	server.router.POST("/setPassword", func(c *gin.Context) { setPassword(c, database) }) 
-	server.router.POST("/deleteUser", func(c *gin.Context) { deleteUser(c, database) })
+	server.router.GET("/users", func(c *gin.Context) { getUser(c, database) })
+	server.router.POST("/users/create", func (c *gin.Context) { createUser(c, database) })
+	server.router.POST("/users/delete", func(c *gin.Context) { deleteUser(c, database) })
+	server.router.POST("/users/verify", func(c *gin.Context) { verifyUser(c, database) })
+	server.router.POST("/users/username", func(c *gin.Context) { setUsername(c, database) }) 
+	server.router.POST("/users/password", func(c *gin.Context) { setPassword(c, database) }) 
+
+	server.router.GET("/applications/users", func(c *gin.Context) { getUsers(c, database) })
+	server.router.POST("/applications/create", func (c *gin.Context) { createApplication(c, database) })
 }
 
 // Creates a new application in the database
