@@ -1,6 +1,6 @@
 # User Authentication Server
 
-A simple Go authentication server built with the Gin framework, PostgreSQL database, and UUID-keys for user authentication.
+A simple user authentication server built with the Gin framework, PostgreSQL database, and UUID-keys for user authentication.
 
 ## Table of Contents
 
