@@ -1,4 +1,4 @@
-# Go Authentication Server
+# User Authentication Server
 
 A simple Go authentication server built with the Gin framework, PostgreSQL database, and UUID-keys for user authentication.
 
