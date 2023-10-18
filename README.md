@@ -7,11 +7,18 @@
 New Routes:
 
 /users
+
 /users/create
+
 /users/delete
+
 /users/verify
+
 /users/password
+
 /users/username
 
+
 /applications/users
+
 /applications/create
