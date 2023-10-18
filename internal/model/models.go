@@ -6,15 +6,21 @@ import (
 	"github.com/google/uuid"
 )
 
-// Channel Result: Applications
+// Channel Result: Application
 type AppResult struct {
 	Application *Application
 	Error *Error
 }
 
-// Channel Result: Users
+// Channel Result: User
 type UserResult struct {
 	User *User
+	Error *Error
+}
+
+// Channel Result: Users
+type UsersResult struct {
+	Users []*User
 	Error *Error
 }
 

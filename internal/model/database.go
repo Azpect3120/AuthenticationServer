@@ -64,17 +64,19 @@ func (db *Database) CreateApplication (ch chan *AppResult, appName string) {
 }
 
 // Create a user
-func (db *Database) CreateUser (applicationID uuid.UUID, username string, password string) (*User, *Error) {
+func (db *Database) CreateUser (ch chan *UserResult, applicationID uuid.UUID, username string, password string) {
 	var applicationCount int
 
 	var countSQL string = "SELECT COUNT(*) FROM applications WHERE ID = $1"
 	if err := db.database.QueryRow(countSQL, applicationID).Scan(&applicationCount); err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 
 	if applicationCount == 0 {
-		return nil, &Error{ Message: "Invalid applicationID.", Status: 401 }
+		// return nil, &Error{ Message: "Invalid applicationID.", Status: 401 }
+		ch <- &UserResult{nil, &Error{ Message: "Invalid applicationID.", Status: 401 }}
 	}
 
 	var user *User = &User{
@@ -88,20 +90,23 @@ func (db *Database) CreateUser (applicationID uuid.UUID, username string, passwo
 
 	// Omit the result return
 	if _, err := db.database.Exec(SQL, user.ID, user.ApplicationID, user.Username, user.Password); err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
-	return user, nil
+	// return user, nil
+	ch <- &UserResult{user, nil}
 }
 
 // Verify a username and password
-func (db *Database) VerifyUser (applicationID uuid.UUID, username string, password string) (*User, *Error) {
+func (db *Database) VerifyUser (ch chan *UserResult, applicationID uuid.UUID, username string, password string) {
 	var SQL string = "SELECT applicationID, ID, password FROM users WHERE applicationID = $1 AND username = $2";
 
 	rows, err := db.database.Query(SQL, applicationID, username)
 
 	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	defer rows.Close()
@@ -113,13 +118,15 @@ func (db *Database) VerifyUser (applicationID uuid.UUID, username string, passwo
 			Password string
 		)
 		if err := rows.Scan(&ApplicationID, &ID, &Password); err != nil {
-			return nil, &Error{ Message: err.Error(), Status: 500 }
+			// return nil, &Error{ Message: err.Error(), Status: 500 }
+			ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 		}
 
 		valid, err := CompareString(password, Password)
 			
 		if err != nil {
-			return nil, &Error{ Message: err.Error(), Status: 500 }
+			// return nil, &Error{ Message: err.Message, Status: err.Status }
+			ch <- &UserResult{nil, &Error{ Message: err.Message, Status: err.Status }}
 		}
 
 		if valid {
@@ -130,20 +137,23 @@ func (db *Database) VerifyUser (applicationID uuid.UUID, username string, passwo
 				Password: Password,
 			}
 
-			return user, nil
+			// return user, nil
+			ch <- &UserResult{user, nil}
 		}
 	}
-	return nil, &Error{ Message: "User was not verified", Status: 401 }
+	// return nil, &Error{ Message: "User was not verified", Status: 401 }
+	ch <- &UserResult{nil, &Error{ Message: "User was not verified", Status: 401 }}
 }
 
 // Get a user from the database using its ID
-func (db *Database) GetUser (applicationID string, userID string) (*User, *Error) {
+func (db *Database) GetUser (ch chan *UserResult, applicationID string, userID string) {
 	var SQL string = "SELECT * FROM users WHERE applicationID = $1 AND ID = $2"
 
 	rows, err := db.database.Query(SQL, applicationID, userID)
 
 	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	defer rows.Close()
@@ -158,7 +168,8 @@ func (db *Database) GetUser (applicationID string, userID string) (*User, *Error
 		)
 
 		if err := rows.Scan(&ID, &ApplicationID, &Username, &Password); err != nil {
-			return nil, &Error{ Message: err.Error(), Status: 500 }
+			// return nil, &Error{ Message: err.Error(), Status: 500 }
+			ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 		}
 
 		user := &User{
@@ -168,39 +179,46 @@ func (db *Database) GetUser (applicationID string, userID string) (*User, *Error
 			Password: Password,
 		}
 
-		return user, nil
+		// return user, nil
+		ch <- &UserResult{user, nil}
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500}
+		// return nil, &Error{ Message: err.Error(), Status: 500}
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
-	return nil, &Error{ Message: "User was not found.", Status: 404 }
+	// return nil, &Error{ Message: "User was not found.", Status: 404 }
+	ch <- &UserResult{nil, &Error{ Message: "User was not found.", Status: 404 }}
 }
 
 
 // Returns an array of users found in an application
-func (db *Database) GetUsers (applicationID string) ([]*User, *Error) {
+func (db *Database) GetUsers (ch chan *UsersResult, applicationID string) {
 	appUUID, err := uuid.Parse(applicationID)
 	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UsersResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 	
 	var appCount int
 
 	var countSQL string = "SELECT COUNT(*) FROM applications WHERE ID = $1"
 	if err := db.database.QueryRow(countSQL, appUUID).Scan(&appCount); err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UsersResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	if appCount == 0 {
-		return nil, &Error{ Message: "Application with the provided ID does not exist.", Status: 404 }
+		// return nil, &Error{ Message: "Application with the provided ID does not exist.", Status: 404 }
+		ch <- &UsersResult{nil, &Error{ Message: "Application with the provided ID does not exist.", Status: 404 }}
 	}
 
 	var SQL string = "SELECT * FROM users WHERE applicationID = $1"
 	rows, err := db.database.Query(SQL, appUUID)
 	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UsersResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	users := []*User{}
@@ -225,7 +243,8 @@ func (db *Database) GetUsers (applicationID string) ([]*User, *Error) {
 		users = append(users, user)
 	}
 
-	return users, nil
+	// return users, nil
+	ch <- &UsersResult{users, nil}
 }
 
 // Updates a users username
@@ -294,15 +313,17 @@ func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newP
 
 	var SQL string = "UPDATE users SET password = $1 WHERE applicationID = $2 AND ID = $3"
 
-	hashedPassword, err := HashString(newPassword)
+	strCh := make(chan *StringResult)
+	go HashString(strCh, newPassword)
+	result := <- strCh
 
-	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+	if result.Error != nil {
+		return nil, &Error{ Message: result.Error.Message, Status: result.Error.Status }
 	}
 
-	_, err2 := db.database.Exec(SQL, hashedPassword, applicationID, userID)
+	_, err := db.database.Exec(SQL, result.String, applicationID, userID)
 
-	if err2 != nil {
+	if err != nil {
 		return nil, &Error{ Message: err.Error(), Status: 500 }
 	}
 

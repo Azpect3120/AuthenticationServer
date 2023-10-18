@@ -21,16 +21,16 @@ func HashString (ch chan *StringResult, string string)  {
 }
 
 // Compare a string to a hashed string 
-func CompareString (unhashed string, hashed string) (bool, error) {
+func CompareString (unhashed string, hashed string) (bool, *Error) {
 	strCh := make(chan *StringResult)
 
 	go HashString(strCh, unhashed)
 
 	result := <- strCh
 
-	if err != nil {
-		return false, err
+	if result.Error != nil {
+		return false, result.Error
 	}
 
-	return hash == hashed, nil
+	return result.String == hashed, nil
 }

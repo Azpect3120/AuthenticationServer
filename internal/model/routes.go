@@ -63,21 +63,28 @@ func createUser (ctx *gin.Context, database Database) {
 	}
 
 	strCh := make(chan *StringResult)
+
 	go HashString(strCh, userReq.Password)
 
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+	strResult := <- strCh
+
+	if strResult.Error != nil {
+		ctx.JSON(strResult.Error.Status, gin.H{ "status": strResult.Error.Status, "error": strResult.Error.Message })
 		return
 	}
 
-	user, e := database.CreateUser(userReq.ApplicationID, userReq.Username, hashedPassword)
+	ch := make(chan *UserResult)
 
-	if e != nil {
-		ctx.JSON(e.Status, gin.H{ "status": e.Status, "error": e.Message })
+	go database.CreateUser(ch, userReq.ApplicationID, userReq.Username, strResult.String)
+
+	result := <- ch
+
+	if result.Error != nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": &user })
+	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": result.User })
 }
 
 // Verify a user in the database
@@ -107,12 +114,16 @@ func verifyUser (ctx *gin.Context, database Database) {
 		return
 	}
 
-	user, err := database.VerifyUser(verifyReq.ApplicationID, verifyReq.Username, verifyReq.Password)
+	ch := make(chan *UserResult)
+	
+	go database.VerifyUser(ch, verifyReq.ApplicationID, verifyReq.Username, verifyReq.Password)
 
-	if err != nil {
-		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
+	result := <- ch
+
+	if result.Error != nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "user": &user })
+		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "user": result.User })
 	}
 }
 
@@ -125,12 +136,16 @@ func getUser (ctx *gin.Context, database Database) {
 	var applicationID string = ctx.DefaultQuery("app-id", "")
 	var userID string = ctx.DefaultQuery("user-id", "")
 	
-	user, err := database.GetUser(applicationID, userID)
+	ch := make(chan *UserResult)
 
-	if err != nil {
-		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
+	go database.GetUser(ch, applicationID, userID)
+
+	result := <- ch
+
+	if result.Error != nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "user": user })
+		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "user": result.User })
 	}
 }
 
@@ -140,12 +155,17 @@ func getUser (ctx *gin.Context, database Database) {
 func getUsers (ctx *gin.Context, database Database) {
 	applicationId := ctx.DefaultQuery("app-id", "")
 
-	users, err := database.GetUsers(applicationId)
 
-	if err != nil {
-		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
+	ch := make(chan *UsersResult)
+
+	go database.GetUsers(ch, applicationId)
+
+	result := <- ch
+
+	if result.Error != nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "users": users })
+		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "users": result.Users })
 	}
 }
 
