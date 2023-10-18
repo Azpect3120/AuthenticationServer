@@ -33,14 +33,18 @@ func createApplication (ctx *gin.Context, database Database) {
 		return
 	}
 
-	application, err := database.CreateApplication(appReq.Name)
+	ch := make (chan *AppResult)
+
+	go database.CreateApplication(ch, appReq.Name)
+
+	result := <- ch
 	 
-	if err != nil {
-		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
+	if result.Error !=  nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "application": &application })
+	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "application": result.Application })
 }
 
 // Create a new user in an application in the database
@@ -58,7 +62,8 @@ func createUser (ctx *gin.Context, database Database) {
 		return
 	}
 
-	hashedPassword, err := HashString(userReq.Password)
+	strCh := make(chan *StringResult)
+	go HashString(strCh, userReq.Password)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })

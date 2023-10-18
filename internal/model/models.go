@@ -6,6 +6,24 @@ import (
 	"github.com/google/uuid"
 )
 
+// Channel Result: Applications
+type AppResult struct {
+	Application *Application
+	Error *Error
+}
+
+// Channel Result: Users
+type UserResult struct {
+	User *User
+	Error *Error
+}
+
+// Channel Result: String
+type StringResult struct {
+	String string
+	Error *Error
+}
+
 // Error: Error struct
 type Error struct {
 	Message			string		`json:"error"`

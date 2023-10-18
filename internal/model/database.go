@@ -44,7 +44,7 @@ func CreateDatabase () *Database {
 
 
 // Create an application
-func (db *Database) CreateApplication (appName string) (*Application, *Error) {
+func (db *Database) CreateApplication (ch chan *AppResult, appName string) {
 	var application *Application = &Application{
 		ID: uuid.New(), 
 		Name: appName,
@@ -54,10 +54,13 @@ func (db *Database) CreateApplication (appName string) (*Application, *Error) {
 
 	// Omit the result return
 	if _, err := db.database.Exec(SQL, application.ID, application.Name); err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &AppResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 		
-	return application, nil
+	// return application, nil
+	ch <- &AppResult{application, nil}
 }
 
 // Create a user
