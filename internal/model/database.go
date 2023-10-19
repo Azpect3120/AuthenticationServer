@@ -248,16 +248,18 @@ func (db *Database) GetUsers (ch chan *UsersResult, applicationID string) {
 }
 
 // Updates a users username
-func (db *Database) SetUsername (applicationID uuid.UUID, userID uuid.UUID, newUsername string) (*User, *Error) {
+func (db *Database) SetUsername (ch chan *UserResult, applicationID uuid.UUID, userID uuid.UUID, newUsername string) {
 	var userCount int
 
 	var countSQL string = "SELECT COUNT(*) FROM users WHERE applicationID = $1 AND ID = $2"
 	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	if userCount == 0 {
-		return nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
+		// return nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
+		ch <- &UserResult{nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }}
 	}
 
 	var SQL string = "UPDATE users SET username = $1 WHERE applicationID = $2 AND ID = $3"
@@ -265,7 +267,8 @@ func (db *Database) SetUsername (applicationID uuid.UUID, userID uuid.UUID, newU
 	_, err := db.database.Exec(SQL, newUsername, applicationID, userID)
 
 	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	SQL = "SELECT * FROM users WHERE applicationID = $1 AND ID = $2"
@@ -273,7 +276,8 @@ func (db *Database) SetUsername (applicationID uuid.UUID, userID uuid.UUID, newU
 	rows, err := db.database.Query(SQL, applicationID, userID)
 
 	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	for rows.Next() {
@@ -293,22 +297,26 @@ func (db *Database) SetUsername (applicationID uuid.UUID, userID uuid.UUID, newU
 			Password: Password,
 		}
 
-		return user, nil
+		// return user, nil
+		ch <- &UserResult{user, nil}
 	}
-	return nil, &Error{ Message: "The users username could not be changed.", Status: 401 }
+	// return nil, &Error{ Message: "The users username could not be changed.", Status: 401 }
+	ch <- &UserResult{nil, &Error{ Message: "The users username could not be changed.", Status: 401 }}
 }
 
 // Updates a users password
-func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newPassword string) (*User, *Error) {
+func (db *Database) SetPassword (ch chan *UserResult, applicationID uuid.UUID, userID uuid.UUID, newPassword string) {
 	var userCount int
 
 	var countSQL string = "SELECT COUNT(*) FROM users WHERE applicationID = $1 AND ID = $2"
 	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	if userCount == 0 {
-		return nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
+		// return nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
+		ch <- &UserResult{nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }}
 	}
 
 	var SQL string = "UPDATE users SET password = $1 WHERE applicationID = $2 AND ID = $3"
@@ -318,13 +326,15 @@ func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newP
 	result := <- strCh
 
 	if result.Error != nil {
-		return nil, &Error{ Message: result.Error.Message, Status: result.Error.Status }
+		// return nil, &Error{ Message: result.Error.Message, Status: result.Error.Status }
+		ch <- &UserResult{nil, &Error{ Message: result.Error.Message, Status: result.Error.Status }}
 	}
 
 	_, err := db.database.Exec(SQL, result.String, applicationID, userID)
 
 	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	SQL = "SELECT * FROM users WHERE applicationID = $1 AND ID = $2"
@@ -332,7 +342,8 @@ func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newP
 	rows, err := db.database.Query(SQL, applicationID, userID)
 
 	if err != nil {
-		return nil, &Error{ Message: err.Error(), Status: 500 }
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 	}
 
 	for rows.Next() {
@@ -352,9 +363,11 @@ func (db *Database) SetPassword (applicationID uuid.UUID, userID uuid.UUID, newP
 			Password: Password,
 		}
 
-		return user, nil
+		// return user, nil
+		ch <- &UserResult{user, nil}
 	}
-	return nil, &Error{ Message: "The users password could not be changed.", Status: 401 }
+	// return nil, &Error{ Message: "The users password could not be changed.", Status: 401 }
+	ch <- &UserResult{nil, &Error{ Message: "The users password could not be changed.", Status: 401 }}
 }
 
 // Deletes a user from the database

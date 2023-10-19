@@ -184,12 +184,16 @@ func setUsername (ctx *gin.Context, database Database) {
 		return
 	}
 
-	user, err := database.SetUsername(setRequest.ApplicationID, setRequest.ID, setRequest.Username)
+	ch := make(chan *UserResult)
 
-	if err != nil {
-		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })	
+	go database.SetUsername(ch, setRequest.ApplicationID, setRequest.ID, setRequest.Username)
+	
+	result := <- ch
+
+	if result.Error != nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })	
 	} else {
-		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": user })
+		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": result.User  })
 	}
 }
 
@@ -203,12 +207,16 @@ func setPassword (ctx *gin.Context, database Database) {
 		return
 	}
 
-	user, err := database.SetPassword(setRequest.ApplicationID, setRequest.ID, setRequest.Password)
+	ch := make(chan *UserResult)
 
-	if err != nil {
-		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })	
+	go database.SetPassword(ch, setRequest.ApplicationID, setRequest.ID, setRequest.Password)
+
+	result := <- ch
+
+	if result.Error != nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })	
 	} else {
-		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": user })
+		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": result.User  })
 	}
 }
 
