@@ -158,7 +158,6 @@ func (db *Database) GetUser (ch chan *UserResult, applicationID string, userID s
 
 	defer rows.Close()
 
-
 	for rows.Next() {
 		var (
 			ID uuid.UUID
