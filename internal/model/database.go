@@ -67,10 +67,23 @@ func (db *Database) CreateUser (ch chan *UserResult, applicationID uuid.UUID, us
 		return
 	}
 
-
 	if applicationCount == 0 {
 		// return nil, &Error{ Message: "Invalid applicationID.", Status: 401 }
 		ch <- &UserResult{nil, &Error{ Message: "Invalid applicationID.", Status: 401 }}
+		return
+	}
+
+	var userCount int
+	var userSQL string = "SELECT COUNT(*) FROM users WHERE applicationId = $1 AND username ILIKE $2"
+	if err := db.database.QueryRow(userSQL, applicationID, username).Scan(&userCount); err != nil {
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
+	}
+
+	if userCount > 0 {
+		// return nil, &Error{ Message: "A user with that username already exists.", Status: 401 }
+		ch <- &UserResult{nil, &Error{ Message: "A user with that username already exists.", Status: 401 }}
 		return
 	}
 
