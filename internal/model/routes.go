@@ -235,10 +235,14 @@ func deleteUser (ctx *gin.Context, database Database) {
 		return
 	}
 
-	err := database.DeleteUser(deleteRequest.ApplicationID, deleteRequest.ID)
+	ch := make(chan *ErrorResult)
 
-	if err != nil {
-		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })	
+	go database.DeleteUser(ch, deleteRequest.ApplicationID, deleteRequest.ID)
+
+	result := <- ch
+
+	if result.Error != nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })	
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{ "status": 200, "message": "User was deleted" })
 	}

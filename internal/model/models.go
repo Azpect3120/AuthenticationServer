@@ -30,6 +30,11 @@ type StringResult struct {
 	Error *Error
 }
 
+// Channel Result: Error
+type ErrorResult struct {
+	Error *Error
+}
+
 // Error: Error struct
 type Error struct {
 	Message			string		`json:"error"`

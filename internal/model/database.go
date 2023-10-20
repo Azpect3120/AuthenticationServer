@@ -71,12 +71,14 @@ func (db *Database) CreateUser (ch chan *UserResult, applicationID uuid.UUID, us
 	if err := db.database.QueryRow(countSQL, applicationID).Scan(&applicationCount); err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 
 	if applicationCount == 0 {
 		// return nil, &Error{ Message: "Invalid applicationID.", Status: 401 }
 		ch <- &UserResult{nil, &Error{ Message: "Invalid applicationID.", Status: 401 }}
+		return
 	}
 
 	var user *User = &User{
@@ -92,6 +94,7 @@ func (db *Database) CreateUser (ch chan *UserResult, applicationID uuid.UUID, us
 	if _, err := db.database.Exec(SQL, user.ID, user.ApplicationID, user.Username, user.Password); err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	// return user, nil
@@ -107,6 +110,7 @@ func (db *Database) VerifyUser (ch chan *UserResult, applicationID uuid.UUID, us
 	if err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	defer rows.Close()
@@ -120,6 +124,7 @@ func (db *Database) VerifyUser (ch chan *UserResult, applicationID uuid.UUID, us
 		if err := rows.Scan(&ApplicationID, &ID, &Password); err != nil {
 			// return nil, &Error{ Message: err.Error(), Status: 500 }
 			ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+			return
 		}
 
 		valid, err := CompareString(password, Password)
@@ -127,6 +132,7 @@ func (db *Database) VerifyUser (ch chan *UserResult, applicationID uuid.UUID, us
 		if err != nil {
 			// return nil, &Error{ Message: err.Message, Status: err.Status }
 			ch <- &UserResult{nil, &Error{ Message: err.Message, Status: err.Status }}
+			return
 		}
 
 		if valid {
@@ -139,6 +145,7 @@ func (db *Database) VerifyUser (ch chan *UserResult, applicationID uuid.UUID, us
 
 			// return user, nil
 			ch <- &UserResult{user, nil}
+			return
 		}
 	}
 	// return nil, &Error{ Message: "User was not verified", Status: 401 }
@@ -154,6 +161,7 @@ func (db *Database) GetUser (ch chan *UserResult, applicationID string, userID s
 	if err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	defer rows.Close()
@@ -169,6 +177,7 @@ func (db *Database) GetUser (ch chan *UserResult, applicationID string, userID s
 		if err := rows.Scan(&ID, &ApplicationID, &Username, &Password); err != nil {
 			// return nil, &Error{ Message: err.Error(), Status: 500 }
 			ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+			return
 		}
 
 		user := &User{
@@ -180,11 +189,13 @@ func (db *Database) GetUser (ch chan *UserResult, applicationID string, userID s
 
 		// return user, nil
 		ch <- &UserResult{user, nil}
+		return
 	}
 
 	if err := rows.Err(); err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500}
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	// return nil, &Error{ Message: "User was not found.", Status: 404 }
@@ -198,6 +209,7 @@ func (db *Database) GetUsers (ch chan *UsersResult, applicationID string) {
 	if err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UsersResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 	
 	var appCount int
@@ -206,11 +218,13 @@ func (db *Database) GetUsers (ch chan *UsersResult, applicationID string) {
 	if err := db.database.QueryRow(countSQL, appUUID).Scan(&appCount); err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UsersResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	if appCount == 0 {
 		// return nil, &Error{ Message: "Application with the provided ID does not exist.", Status: 404 }
 		ch <- &UsersResult{nil, &Error{ Message: "Application with the provided ID does not exist.", Status: 404 }}
+		return
 	}
 
 	var SQL string = "SELECT * FROM users WHERE applicationID = $1"
@@ -218,6 +232,7 @@ func (db *Database) GetUsers (ch chan *UsersResult, applicationID string) {
 	if err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UsersResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	users := []*User{}
@@ -254,11 +269,13 @@ func (db *Database) SetUsername (ch chan *UserResult, applicationID uuid.UUID, u
 	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	if userCount == 0 {
 		// return nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
 		ch <- &UserResult{nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }}
+		return
 	}
 
 	var SQL string = "UPDATE users SET username = $1 WHERE applicationID = $2 AND ID = $3"
@@ -268,6 +285,7 @@ func (db *Database) SetUsername (ch chan *UserResult, applicationID uuid.UUID, u
 	if err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	SQL = "SELECT * FROM users WHERE applicationID = $1 AND ID = $2"
@@ -277,6 +295,7 @@ func (db *Database) SetUsername (ch chan *UserResult, applicationID uuid.UUID, u
 	if err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	for rows.Next() {
@@ -298,6 +317,7 @@ func (db *Database) SetUsername (ch chan *UserResult, applicationID uuid.UUID, u
 
 		// return user, nil
 		ch <- &UserResult{user, nil}
+		return
 	}
 	// return nil, &Error{ Message: "The users username could not be changed.", Status: 401 }
 	ch <- &UserResult{nil, &Error{ Message: "The users username could not be changed.", Status: 401 }}
@@ -311,11 +331,13 @@ func (db *Database) SetPassword (ch chan *UserResult, applicationID uuid.UUID, u
 	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	if userCount == 0 {
 		// return nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
 		ch <- &UserResult{nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }}
+		return
 	}
 
 	var SQL string = "UPDATE users SET password = $1 WHERE applicationID = $2 AND ID = $3"
@@ -327,6 +349,7 @@ func (db *Database) SetPassword (ch chan *UserResult, applicationID uuid.UUID, u
 	if result.Error != nil {
 		// return nil, &Error{ Message: result.Error.Message, Status: result.Error.Status }
 		ch <- &UserResult{nil, &Error{ Message: result.Error.Message, Status: result.Error.Status }}
+		return
 	}
 
 	_, err := db.database.Exec(SQL, result.String, applicationID, userID)
@@ -334,6 +357,7 @@ func (db *Database) SetPassword (ch chan *UserResult, applicationID uuid.UUID, u
 	if err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	SQL = "SELECT * FROM users WHERE applicationID = $1 AND ID = $2"
@@ -343,6 +367,7 @@ func (db *Database) SetPassword (ch chan *UserResult, applicationID uuid.UUID, u
 	if err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	for rows.Next() {
@@ -364,22 +389,27 @@ func (db *Database) SetPassword (ch chan *UserResult, applicationID uuid.UUID, u
 
 		// return user, nil
 		ch <- &UserResult{user, nil}
+		return
 	}
 	// return nil, &Error{ Message: "The users password could not be changed.", Status: 401 }
 	ch <- &UserResult{nil, &Error{ Message: "The users password could not be changed.", Status: 401 }}
 }
 
 // Deletes a user from the database
-func (db *Database) DeleteUser (applicationID uuid.UUID, userID uuid.UUID) *Error {
+func (db *Database) DeleteUser (ch chan *ErrorResult, applicationID uuid.UUID, userID uuid.UUID) {
 	var userCount int
 
 	var countSQL string = "SELECT COUNT(*) FROM users WHERE applicationID = $1 AND ID = $2"
 	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
-		return &Error { Message: err.Error(), Status: 500 }
+		// return &Error { Message: err.Error(), Status: 500 }
+		ch <- &ErrorResult{&Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	if userCount == 0 {
-		return &Error { Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
+		// return &Error { Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
+		ch <- &ErrorResult{&Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }}
+		return
 	}
 
 	var SQL string = "DELETE FROM users WHERE applicationID = $1 AND ID = $2"
@@ -387,18 +417,25 @@ func (db *Database) DeleteUser (applicationID uuid.UUID, userID uuid.UUID) *Erro
 	result, err := db.database.Exec(SQL, applicationID, userID)
 
 	if err != nil {
-		return &Error { Message: err.Error(), Status: 500 }
+		// return &Error { Message: err.Error(), Status: 500 }
+		ch <- &ErrorResult{&Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	
 	if err != nil {
-		return &Error { Message: err.Error(), Status: 500 }
+		// return &Error { Message: err.Error(), Status: 500 }
+		ch <- &ErrorResult{&Error{ Message: err.Error(), Status: 500 }}
+		return
 	}
 
 	if rowsAffected == 0 {
-		return &Error { Message: "The user was not found.", Status: 404 }
+		// return &Error { Message: "The user was not found.", Status: 404 }
+		ch <- &ErrorResult{&Error{ Message: "The user was not found.", Status: 404 }}
+		return
 	}
 
-	return nil
+	// return nil
+	ch <- &ErrorResult{nil}
 }
