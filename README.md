@@ -107,8 +107,10 @@ NOTE: The `ID` returned by this request is very important! It will be REQUIRED t
 ```json
   {
     "status": 201,
-    "name": "your-app-name",
-    "ID": "00000000-0000-0000-00000000"
+    "application": {
+      "name": "your-app-name",
+      "ID": "00000000-0000-0000-00000000"
+    }
   }
 ```
 
