@@ -95,7 +95,8 @@ All users are stored within an `application`, which means for new users you must
 
 ```json
   {
-    "name": "your-app-name"
+    "name": "your-app-name",
+    "email": "your-email-here"
   }
 ```
 
