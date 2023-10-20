@@ -367,9 +367,17 @@ Provided `applicationID` does not exist
     "error": "Application with the provided ID does not exist."
   }
 ```
+=======
+# TODO LIST
+- DONE: Return errors when a client trys to request users from an app that doesn't exist
+- DONE: Basic error handling, right now nothing really happens: FIX THAT
+- DONE: convert all JSON keys to lowercase
+- WIP: Convert routes to be concurrent
+>>>>>>> dev
 
 
 
+<<<<<<< HEAD
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
@@ -383,3 +391,21 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 ## License
 
 The project is licensed under the **MIT License**
+=======
+/users
+
+/users/create
+
+/users/delete
+
+/users/verify
+
+/users/password
+
+/users/username
+
+
+/applications/users
+
+/applications/create
+>>>>>>> dev
