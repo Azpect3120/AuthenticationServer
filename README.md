@@ -52,11 +52,8 @@ Follow these steps to get the project up and running on your local machine.
 
 2. Set up your PostgreSQL database and configure the connection details in the `.env` file:
 ```.env
-  db_host=db-host-here
-  db_port=db-port-here
-  db_user=db-username-here
-  db_password=db-password-here
-  db_name=db-table-name-here
+  # This url can found in the dashboard of most PSQL hosts or can be constructed using the required pieces
+  db_url=your-connection-url-here
 ```
 
 3. Install dependencies:
