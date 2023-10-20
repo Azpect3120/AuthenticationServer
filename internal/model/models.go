@@ -6,6 +6,13 @@ import (
 	"github.com/google/uuid"
 )
 
+// Email: Email Object
+type Email struct {
+	To		string		`json:"to"`
+	Subject	string		`json:"subject"`
+	Content string		`json:"content"`
+}
+
 // Channel Result: Application
 type AppResult struct {
 	Application *Application
@@ -35,7 +42,7 @@ type ErrorResult struct {
 	Error *Error
 }
 
-// Error: Error struct
+// Error: Custom Error
 type Error struct {
 	Message			string		`json:"error"`
 	Status			int			`json:"status"`
@@ -58,6 +65,7 @@ type Application struct {
 // Request map: /createApplication
 type CreateApplicationRequest struct {
 	Name	string		`json:"name"`
+	Email   string		`json:"email"`
 }
 
 // Request map: /createUser
