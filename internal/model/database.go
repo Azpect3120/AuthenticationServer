@@ -2,7 +2,6 @@ package model
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
 	"log"
 
@@ -22,14 +21,8 @@ func CreateDatabase () *Database {
 		panic(err)
 	}
 
-	db_host := os.Getenv("db_host")
-	db_port	:= os.Getenv("db_port")
-	db_user	:= os.Getenv("db_user")
-	db_password	:= os.Getenv("db_password")
-	db_name := os.Getenv("db_name")
-
 	database := &Database {
-		connectionString: fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", db_host, db_port, db_user, db_password, db_name),
+		connectionString: os.Getenv("db_url"),
 	}
 
 	db, err := sql.Open("postgres", database.connectionString)
