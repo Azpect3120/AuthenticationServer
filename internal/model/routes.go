@@ -2,6 +2,7 @@ package model
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,19 @@ func (server *Server) LoadRoutes (database Database) {
 
 	server.router.GET("/applications/users", func(c *gin.Context) { getUsers(c, database) })
 	server.router.POST("/applications/create", func (c *gin.Context) { createApplication(c, database) })
+
+	server.router.GET("/testing/email", func(c *gin.Context) { emailTesting(c, database) })
+}
+
+func emailTesting (ctx *gin.Context, database Database) {
+	res, err := SendEmail("hhargreaves2006@gmail.com", "This is a test email", "Hi mom!")
+
+	if err != nil {
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{ "status": 200, "message": res })
 }
 
 // Creates a new application in the database
@@ -45,6 +59,27 @@ func createApplication (ctx *gin.Context, database Database) {
 	}
 
 	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "application": result.Application })
+
+	emailContent := `
+	Dear ` + appReq.Email + `,
+
+	We're excited to inform you that an application has been created for you!
+
+	Application Details:
+	- Application Name: ` + result.Application.Name + `
+	- Application ID: ` + result.Application.ID.String() + `
+	- Created Date: ` + time.Now().String() + `
+
+	If you did not initiate this application, please contact our support team immediately.
+
+	Thank you for using my server for your authentication needs.
+
+	Best regards,
+	Azpect3120
+	https://github.com/Azpect3120/AuthenticationServer
+	`
+
+	SendEmail(appReq.Email, "Application Creation Notification", emailContent)
 }
 
 // Create a new user in an application in the database
