@@ -18,19 +18,6 @@ func (server *Server) LoadRoutes (database Database) {
 
 	server.router.GET("/applications/users", func(c *gin.Context) { getUsers(c, database) })
 	server.router.POST("/applications/create", func (c *gin.Context) { createApplication(c, database) })
-
-	server.router.GET("/testing/email", func(c *gin.Context) { emailTesting(c, database) })
-}
-
-func emailTesting (ctx *gin.Context, database Database) {
-	res, err := SendEmail("hhargreaves2006@gmail.com", "This is a test email", "Hi mom!")
-
-	if err != nil {
-		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
-		return
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{ "status": 200, "message": res })
 }
 
 // Creates a new application in the database
