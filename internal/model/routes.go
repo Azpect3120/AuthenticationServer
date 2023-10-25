@@ -58,7 +58,6 @@ func createApplication (ctx *gin.Context, database Database) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "application": result.Application })
 
 	emailContent := `
 	Dear ` + appReq.Email + `,
@@ -68,7 +67,7 @@ func createApplication (ctx *gin.Context, database Database) {
 	Application Details:
 	- Application Name: ` + result.Application.Name + `
 	- Application ID: ` + result.Application.ID.String() + `
-	- Created Date: ` + time.Now().String() + `
+	- Created Date: ` + time.Now().Format("01-02-2006 15:04") + `
 
 	If you did not initiate this application, please contact our support team immediately.
 
@@ -79,7 +78,12 @@ func createApplication (ctx *gin.Context, database Database) {
 	https://github.com/Azpect3120/AuthenticationServer
 	`
 
-	SendEmail(appReq.Email, "Application Creation Notification", emailContent)
+	if _, err := SendEmail(appReq.Email, "Application Creation Notification", emailContent); err != nil {
+		ctx.JSON(err.Status, gin.H{ "status": err.Status, "error": err.Message })
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "application": result.Application })
 }
 
 // Create a new user in an application in the database

@@ -7,8 +7,8 @@ import (
 func SendEmail (to, subject, content string) (*Email, *Error) {
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
-	smtpUsername := ""
-	smtpPassword := ""
+	smtpUsername := "user.authentication.server12@gmail.com"
+	smtpPassword := "jjyu ddmu deag xwpe"
 
 	auth := smtp.PlainAuth("", smtpUsername, smtpPassword, smtpHost)
 
