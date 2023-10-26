@@ -2,13 +2,19 @@ package model
 
 import (
 	"net/smtp"
+	"os"
+	"github.com/joho/godotenv"
 )
 
 func SendEmail(to, subject, content string) (*Email, *Error) {
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
+
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
-	smtpUsername := "user.authentication.server12@gmail.com"
-	smtpPassword := "jjyu ddmu deag xwpe"
+	smtpUsername := os.Getenv("smtp_email")
+	smtpPassword := os.Getenv("smtp_password")
 
 	auth := smtp.PlainAuth("", smtpUsername, smtpPassword, smtpHost)
 
