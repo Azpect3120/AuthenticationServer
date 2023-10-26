@@ -98,6 +98,8 @@ Once the server is up and running you will need to connect to a PostgreSQL datab
 
 All users are stored within an `application`, which means for new users you must first create an application. To do this you can send a post request to the `/applications/create` endpoint.
 
+The data property can be used to store raw JSON data. It should be stringified before being sent to the server otherwise the server will not know how to handle the request. If you do not wish to hold any data along with the users you can send an empty string;
+
 ```json
 {
     "name": "your-app-name",
@@ -195,7 +197,7 @@ User was not verified
 
 ### <a id="update-a-user"></a> Update a User
 
-Once you have created users you can update their username, password, and data using the respective post endpoints, `/users/username`, `/users/password`, and `/users/notes`.
+Once you have created users you can update their username, password, and data using the respective post endpoints, `/users/username`, `/users/password`, and `/users/data`.
 
 NOTE: No validation is done on the server side, so any password validation should be handled on the front-end
 
