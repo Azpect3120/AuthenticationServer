@@ -6,7 +6,7 @@ import (
 )
 
 // Hash a string using the sha256 hash method
-func HashString (ch chan *StringResult, string string)  {
+func HashString(ch chan *StringResult, string string) {
 	hash := sha256.New()
 
 	if _, err := hash.Write([]byte(string)); err != nil {
@@ -20,13 +20,13 @@ func HashString (ch chan *StringResult, string string)  {
 	ch <- &StringResult{hashed, nil}
 }
 
-// Compare a string to a hashed string 
-func CompareString (unhashed string, hashed string) (bool, *Error) {
+// Compare a string to a hashed string
+func CompareString(unhashed string, hashed string) (bool, *Error) {
 	strCh := make(chan *StringResult)
 
 	go HashString(strCh, unhashed)
 
-	result := <- strCh
+	result := <-strCh
 
 	if result.Error != nil {
 		return false, result.Error

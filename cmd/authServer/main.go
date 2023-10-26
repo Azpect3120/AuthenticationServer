@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-func main () {
-	var database *model.Database = model.CreateDatabase();
+func main() {
+	var database *model.Database = model.CreateDatabase()
 
 	if database == nil {
 		panic("Database connection failure")
@@ -17,7 +17,7 @@ func main () {
 		port = "8080"
 	}
 
-	server := model.CreateServer(port, *database);
+	server := model.CreateServer(port, *database)
 
 	server.Listen()
 }

@@ -6,25 +6,25 @@ import (
 
 type Server struct {
 	router *gin.Engine
-	port string
+	port   string
 }
 
 func CreateServer(port string, database Database) *Server {
 	server := &Server{
 		router: gin.Default(),
-		port: port,
+		port:   port,
 	}
 	server.LoadRoutes(database)
 	server.loadCORS()
 	return server
 }
 
-func (server *Server) Listen () {
+func (server *Server) Listen() {
 	server.router.Run(":" + server.port)
 }
 
-func (server *Server) loadCORS () {
-	server.router.Use(func (c *gin.Context) {
+func (server *Server) loadCORS() {
+	server.router.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
