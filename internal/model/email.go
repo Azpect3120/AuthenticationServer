@@ -4,7 +4,7 @@ import (
 	"net/smtp"
 )
 
-func SendEmail (to, subject, content string) (*Email, *Error) {
+func SendEmail(to, subject, content string) (*Email, *Error) {
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 	smtpUsername := ""
@@ -17,13 +17,13 @@ func SendEmail (to, subject, content string) (*Email, *Error) {
 		auth,
 		smtpUsername,
 		[]string{to},
-		[]byte("Subject: " + subject + "\r\n" + content),
+		[]byte("Subject: "+subject+"\r\n"+content),
 	)
 
 	if err != nil {
-		return nil, &Error{ Status: 500, Message: err.Error() }
+		return nil, &Error{Status: 500, Message: err.Error()}
 	} else {
-		return &Email{ To: to, Subject: subject, Content: content }, nil
+		return &Email{To: to, Subject: subject, Content: content}, nil
 	}
 
 }
