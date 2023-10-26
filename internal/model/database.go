@@ -57,7 +57,7 @@ func (db *Database) CreateApplication (ch chan *AppResult, appName string) {
 }
 
 // Create a user
-func (db *Database) CreateUser (ch chan *UserResult, applicationID uuid.UUID, username string, password string) {
+func (db *Database) CreateUser (ch chan *UserResult, applicationID uuid.UUID, username string, password string, data string) {
 	var applicationCount int
 
 	var countSQL string = "SELECT COUNT(*) FROM applications WHERE ID = $1"
@@ -92,12 +92,13 @@ func (db *Database) CreateUser (ch chan *UserResult, applicationID uuid.UUID, us
 		Username: username,
 		Password: password,
 		ApplicationID: applicationID,
+		Data: data,
 	}
 
-	var SQL string = "INSERT INTO users (ID, applicationID, username, password) VALUES ($1, $2, $3, $4)"
+	var SQL string = "INSERT INTO users (ID, applicationID, username, password, data) VALUES ($1, $2, $3, $4, $5)"
 
 	// Omit the result return
-	if _, err := db.database.Exec(SQL, user.ID, user.ApplicationID, user.Username, user.Password); err != nil {
+	if _, err := db.database.Exec(SQL, user.ID, user.ApplicationID, user.Username, user.Password, user.Data); err != nil {
 		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 		return
@@ -126,8 +127,9 @@ func (db *Database) VerifyUser (ch chan *UserResult, applicationID uuid.UUID, us
 			ApplicationID uuid.UUID
 			ID uuid.UUID
 			Password string
+			Data string
 		)
-		if err := rows.Scan(&ApplicationID, &ID, &Password); err != nil {
+		if err := rows.Scan(&ApplicationID, &ID, &Password, &Data); err != nil {
 			// return nil, &Error{ Message: err.Error(), Status: 500 }
 			ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 			return
@@ -147,6 +149,7 @@ func (db *Database) VerifyUser (ch chan *UserResult, applicationID uuid.UUID, us
 				ApplicationID: ApplicationID,
 				Username: username,
 				Password: Password,
+				Data: Data,
 			}
 
 			// return user, nil
@@ -178,9 +181,10 @@ func (db *Database) GetUser (ch chan *UserResult, applicationID string, userID s
 			ApplicationID uuid.UUID
 			Username string
 			Password string
+			Data string
 		)
 
-		if err := rows.Scan(&ID, &ApplicationID, &Username, &Password); err != nil {
+		if err := rows.Scan(&ID, &ApplicationID, &Username, &Password, &Data); err != nil {
 			// return nil, &Error{ Message: err.Error(), Status: 500 }
 			ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
 			return
@@ -191,6 +195,7 @@ func (db *Database) GetUser (ch chan *UserResult, applicationID string, userID s
 			ApplicationID: ApplicationID,
 			Username: Username,
 			Password: Password,
+			Data: Data,
 		}
 
 		// return user, nil
@@ -249,15 +254,17 @@ func (db *Database) GetUsers (ch chan *UsersResult, applicationID string) {
 			ApplicationID uuid.UUID
 			Username string
 			Password string
+			Data string
 		)
 
-		rows.Scan(&ID, &ApplicationID, &Username, &Password) 
+		rows.Scan(&ID, &ApplicationID, &Username, &Password, &Data) 
 
 		user := &User{
 			ApplicationID: ApplicationID,
 			ID: ID,
 			Username: Username,
 			Password: Password,
+			Data: Data,
 		}
 
 		users = append(users, user)
@@ -310,15 +317,17 @@ func (db *Database) SetUsername (ch chan *UserResult, applicationID uuid.UUID, u
 			ApplicationID uuid.UUID
 			Username string
 			Password string
+			Data string
 		)
 
-		rows.Scan(&ID, &ApplicationID, &Username, &Password)
+		rows.Scan(&ID, &ApplicationID, &Username, &Password, &Data)
 
 		user := &User{
 			ID: ID,
 			ApplicationID: ApplicationID,
 			Username: Username,
 			Password: Password,
+			Data: Data,
 		}
 
 		// return user, nil
@@ -382,15 +391,17 @@ func (db *Database) SetPassword (ch chan *UserResult, applicationID uuid.UUID, u
 			ApplicationID uuid.UUID
 			Username string
 			Password string
+			Data string
 		)
 
-		rows.Scan(&ID, &ApplicationID, &Username, &Password)
+		rows.Scan(&ID, &ApplicationID, &Username, &Password, &Data)
 
 		user := &User{
 			ID: ID,
 			ApplicationID: ApplicationID,
 			Username: Username,
 			Password: Password,
+			Data: Data,
 		}
 
 		// return user, nil
@@ -399,6 +410,70 @@ func (db *Database) SetPassword (ch chan *UserResult, applicationID uuid.UUID, u
 	}
 	// return nil, &Error{ Message: "The users password could not be changed.", Status: 401 }
 	ch <- &UserResult{nil, &Error{ Message: "The users password could not be changed.", Status: 401 }}
+}
+
+// Updates a users data
+func (db *Database) SetData (ch chan *UserResult, applicationID uuid.UUID, userID uuid.UUID, newData string) {
+	var userCount int
+
+	var countSQL string = "SELECT COUNT(*) FROM users WHERE applicationID = $1 AND ID = $2"
+	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
+	}
+
+	if userCount == 0 {
+		// return nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
+		ch <- &UserResult{nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }}
+		return
+	}
+
+	var SQL string = "UPDATE users SET data = $1 WHERE applicationID = $2 AND ID = $3"
+
+	_, err := db.database.Exec(SQL, newData, applicationID, userID)
+
+	if err != nil {
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
+	}
+
+	SQL = "SELECT * FROM users WHERE applicationID = $1 AND ID = $2"
+
+	rows, err := db.database.Query(SQL, applicationID, userID)
+
+	if err != nil {
+		// return nil, &Error{ Message: err.Error(), Status: 500 }
+		ch <- &UserResult{nil, &Error{ Message: err.Error(), Status: 500 }}
+		return
+	}
+
+	for rows.Next() {
+		var (
+			ID uuid.UUID
+			ApplicationID uuid.UUID
+			Username string
+			Password string
+			Data string
+		)
+
+		rows.Scan(&ID, &ApplicationID, &Username, &Password, &Data)
+
+		user := &User{
+			ID: ID,
+			ApplicationID: ApplicationID,
+			Username: Username,
+			Password: Password,
+			Data: Data,
+		}
+
+		// return user, nil
+		ch <- &UserResult{user, nil}
+		return
+	}
+	// return nil, &Error{ Message: "The users username could not be changed.", Status: 401 }
+	ch <- &UserResult{nil, &Error{ Message: "The users username could not be changed.", Status: 401 }}
 }
 
 // Deletes a user from the database

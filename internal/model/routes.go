@@ -15,6 +15,7 @@ func (server *Server) LoadRoutes (database Database) {
 	server.router.POST("/users/verify", func(c *gin.Context) { verifyUser(c, database) })
 	server.router.POST("/users/username", func(c *gin.Context) { setUsername(c, database) }) 
 	server.router.POST("/users/password", func(c *gin.Context) { setPassword(c, database) }) 
+	server.router.POST("/users/data", func(c *gin.Context) { setData(c, database) })
 
 	server.router.GET("/applications/users", func(c *gin.Context) { getUsers(c, database) })
 	server.router.POST("/applications/create", func (c *gin.Context) { createApplication(c, database) })
@@ -101,7 +102,7 @@ func createUser (ctx *gin.Context, database Database) {
 
 	ch := make(chan *UserResult)
 
-	go database.CreateUser(ch, userReq.ApplicationID, userReq.Username, strResult.String)
+	go database.CreateUser(ch, userReq.ApplicationID, userReq.Username, strResult.String, userReq.Data)
 
 	result := <- ch
 
@@ -246,6 +247,28 @@ func setPassword (ctx *gin.Context, database Database) {
 	}
 }
 
+// Update a users password
+// Requires the ApplicationID and the UserID
+func setData (ctx *gin.Context, database Database) {
+	var setRequest SetDataRequest
+
+	if err := ctx.ShouldBindJSON(&setRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{ "status": 400, "error": err.Error() })
+		return
+	}
+
+	ch := make(chan *UserResult)
+
+	go database.SetData(ch, setRequest.ApplicationID, setRequest.ID, setRequest.Data)
+
+	result := <- ch
+
+	if result.Error != nil {
+		ctx.JSON(result.Error.Status, gin.H{ "status": result.Error.Status, "error": result.Error.Message })	
+	} else {
+		ctx.JSON(http.StatusCreated, gin.H{ "status": 201, "user": result.User  })
+	}
+}
 // Deletes a user from the database
 // Requires the ApplicationID and the UserID
 func deleteUser (ctx *gin.Context, database Database) {

@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"reflect"
+
 	"github.com/google/uuid"
 )
 
@@ -54,6 +55,7 @@ type User struct {
 	Username		string		`json:"username"` 
 	Password		string		`json:"password"`
 	ApplicationID	uuid.UUID	`json:"applicationID"`
+	Data			string		`json:"data"`
 }
 
 // Database table: Applications
@@ -73,6 +75,7 @@ type CreateUserRequest struct {
 	ApplicationID	uuid.UUID	`json:"applicationID"`
 	Username		string		`json:"username"`
 	Password		string		`json:"password"`
+	Data			string		`json:"data"`
 }
 
 // Request map: /verifyUser
@@ -94,6 +97,13 @@ type SetPasswordRequest struct {
 	ApplicationID	uuid.UUID	`json:"applicationID"`
 	ID				uuid.UUID	`json:"ID"`
 	Password		string		`json:"password"`
+}
+
+// Request map: /setData
+type SetDataRequest struct {
+	ApplicationID	uuid.UUID	`json:"applicationID"`
+	ID				uuid.UUID	`json:"ID"`
+	Data			string		`json:"data"`
 }
 
 // Request map: /deleteUser
