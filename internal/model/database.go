@@ -109,7 +109,7 @@ func (db *Database) CreateUser(ch chan *UserResult, applicationID uuid.UUID, use
 
 // Verify a username and password
 func (db *Database) VerifyUser(ch chan *UserResult, applicationID uuid.UUID, username string, password string) {
-	var SQL string = "SELECT applicationID, ID, password FROM users WHERE applicationID = $1 AND username = $2"
+	var SQL string = "SELECT applicationID, ID, password, data FROM users WHERE applicationID = $1 AND username = $2"
 
 	rows, err := db.database.Query(SQL, applicationID, username)
 
@@ -126,7 +126,7 @@ func (db *Database) VerifyUser(ch chan *UserResult, applicationID uuid.UUID, use
 			ApplicationID uuid.UUID
 			ID            uuid.UUID
 			Password      string
-			Data          string
+			Data		string
 		)
 		if err := rows.Scan(&ApplicationID, &ID, &Password, &Data); err != nil {
 			// return nil, &Error{ Message: err.Error(), Status: 500 }
