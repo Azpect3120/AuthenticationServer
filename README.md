@@ -305,7 +305,7 @@ Data was not successfully updated
 ```json
 {
     "status": 400,
-    "error": "The users username could not be change."
+    "error": "The users data could not be change."
 }
 ```
 

@@ -471,7 +471,7 @@ func (db *Database) SetData(ch chan *UserResult, applicationID uuid.UUID, userID
 		return
 	}
 	// return nil, &Error{ Message: "The users username could not be changed.", Status: 401 }
-	ch <- &UserResult{nil, &Error{Message: "The users username could not be changed.", Status: 401}}
+	ch <- &UserResult{nil, &Error{Message: "The users data could not be changed.", Status: 401}}
 }
 
 // Deletes a user from the database
