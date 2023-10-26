@@ -278,14 +278,25 @@ func (db *Database) SetUsername(ch chan *UserResult, applicationID uuid.UUID, us
 
 	var countSQL string = "SELECT COUNT(*) FROM users WHERE applicationID = $1 AND ID = $2"
 	if err := db.database.QueryRow(countSQL, applicationID, userID).Scan(&userCount); err != nil {
-		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{Message: err.Error(), Status: 500}}
 		return
 	}
 
 	if userCount == 0 {
-		// return nil, &Error{ Message: "A user with the provided ID and applicationID does not exist.", Status: 404 }
 		ch <- &UserResult{nil, &Error{Message: "A user with the provided ID and applicationID does not exist.", Status: 404}}
+		return
+	}
+
+	var usernameCount int
+
+	var usernameCountSQL string = "SELECT COUNT(*) FROM users WHERE username = $1"
+	if err := db.database.QueryRow(usernameCountSQL, newUsername).Scan(&usernameCount); err != nil {
+		ch <- &UserResult{nil, &Error{Message: err.Error(), Status: 500}}
+		return
+	}
+
+	if usernameCount > 0 {
+		ch <- &UserResult{nil, &Error{Message: "That username is taken, please try again.", Status: 401}}
 		return
 	}
 
@@ -294,7 +305,6 @@ func (db *Database) SetUsername(ch chan *UserResult, applicationID uuid.UUID, us
 	_, err := db.database.Exec(SQL, newUsername, applicationID, userID)
 
 	if err != nil {
-		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{Message: err.Error(), Status: 500}}
 		return
 	}
@@ -304,7 +314,6 @@ func (db *Database) SetUsername(ch chan *UserResult, applicationID uuid.UUID, us
 	rows, err := db.database.Query(SQL, applicationID, userID)
 
 	if err != nil {
-		// return nil, &Error{ Message: err.Error(), Status: 500 }
 		ch <- &UserResult{nil, &Error{Message: err.Error(), Status: 500}}
 		return
 	}
@@ -328,11 +337,9 @@ func (db *Database) SetUsername(ch chan *UserResult, applicationID uuid.UUID, us
 			Data:          Data,
 		}
 
-		// return user, nil
 		ch <- &UserResult{user, nil}
 		return
 	}
-	// return nil, &Error{ Message: "The users username could not be changed.", Status: 401 }
 	ch <- &UserResult{nil, &Error{Message: "The users username could not be changed.", Status: 401}}
 }
 
