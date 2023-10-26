@@ -3,8 +3,8 @@
 - DONE: Basic error handling, right now nothing really happens: FIX THAT
 - DONE: convert all JSON keys to lowercase
 - DONE: Convert routes to be concurrent
-- WIP: Convert all functions to be concurrent
-- WIP: Do not allow duplicate username in applications
+- DONE: Convert all functions to be concurrent
+- WIP: Do not allow duplicate username in applications (creating was done, but updating is not complete)
 
 
 New Routes:
@@ -20,6 +20,8 @@ New Routes:
 /users/password
 
 /users/username
+
+/users/data
 
 
 /applications/users
