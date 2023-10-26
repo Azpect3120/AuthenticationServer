@@ -133,6 +133,8 @@ To create a user in your new application you can send a post request to the `/us
 The `ApplicationID` is the `ID` you were returned when you created an application.
 Passwords are stored securely in the database using various hashing methods, so there is no need to hash or encrypt the passwords on the front-end. Though if you are concerned, you may still consider using your own hashing or encryption on the front-end BEFORE sending data to the server.
 
+NOTE: `data` field must not be a blank string! You may provide a blank object `{}` but you cannot provide a blank string `""`
+
 ```json
 {
     "applicationID": "application-id-here",
