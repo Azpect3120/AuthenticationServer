@@ -271,7 +271,7 @@ Password was not successfully updated
 }
 ```
 
-`/users/notes`
+`/users/data`
 
 ```json
 {
@@ -283,7 +283,7 @@ Password was not successfully updated
 
 Example responses:
 
-Username was successfully updated
+Data was successfully updated
 
 ```json
 {
@@ -298,7 +298,7 @@ Username was successfully updated
 }
 ```
 
-Username was not successfully updated
+Data was not successfully updated
 
 ```json
 {
