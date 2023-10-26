@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/Azpect3120/AuthenticationServer/internal/model"
-	"os"
 )
 
 func main() {
@@ -12,12 +11,7 @@ func main() {
 		panic("Database connection failure")
 	}
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
-
-	server := model.CreateServer(port, *database)
+	server := model.CreateServer("8080", *database)
 
 	server.Listen()
 }
