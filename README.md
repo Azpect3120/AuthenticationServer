@@ -86,13 +86,25 @@ Once the server is up and running you will need to connect to a PostgreSQL datab
       name TEXT
   );
 
-  CREATE TABLE IF NOT EXISTS Users (
+  CREATE TABLE IF NOT EXISTS users (
       id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
       applicationID UUID,
       username TEXT,
       password TEXT,
       data TEXT,
-      FOREIGN KEY (ApplicationID) REFERENCES Applications(ID)
+      FOREIGN KEY (applicationID) REFERENCES applications(ID)
+  );
+
+  CREATE TABLE IF NOT EXISTS logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    elapsedTime TEXT,
+    method VARCHAR(16),
+    endpoint TEXT,
+    query TEXT,
+    reqBody TEXT,
+    code INT,
+    resBody TEXT
   );
 ```
 

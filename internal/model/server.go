@@ -10,10 +10,16 @@ type Server struct {
 }
 
 func CreateServer(port string, database Database) *Server {
+	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
+
 	server := &Server{
 		router: gin.Default(),
 		port:   port,
 	}
+
+	server.router.Use(LoggingMiddleWare(&database))
+
 	server.LoadRoutes(database)
 	server.loadCORS()
 	return server
