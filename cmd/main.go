@@ -6,9 +6,10 @@ import (
 	"github.com/Azpect3120/AuthenticationServer/core/model"
 	s "github.com/Azpect3120/AuthenticationServer/core/server"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-const DB_CONN_STRING string = "postgres://lnnhgkzj:kR6RcBmeiyhkkkEnWKmfnCJw3oovszRQ@bubble.db.elephantsql.com/lnnhgkzj"
+const DB_CONN_STRING string = "postgres://lnnhgkzj:N6L1rYn7uRZmG7N9HGnWDyhRogxVCyRb@bubble.db.elephantsql.com/lnnhgkzj"
 
 func main() {
 	server := s.NewServer(3000, "")
@@ -20,18 +21,37 @@ func main() {
     s.AddRoute(server, "post", "/v2/applications", func(ctx *gin.Context) {
         var req model.CreateApplicationRequest
         if err := ctx.ShouldBindJSON(&req); err != nil {
-            ctx.JSON(404, gin.H{ "error": err.Error() })
+            ctx.JSON(404, gin.H{ "status": 404, "error": err.Error() })
+            return
         }
 
         message := applications.MatchColumns(&req.Columns)
         app := applications.New(req.Name, req.Columns)
 
-        if err := applications.Insert(db, app); err != nil {
-            ctx.JSON(500, gin.H{ "status": 500, "error": err.Error() })
+        code , err := applications.Insert(db, app) 
+        if err != nil {
+            ctx.JSON(code, gin.H{ "status": code, "error": err.Error() })
             return
         }
 
-        ctx.JSON(200, gin.H{ "status": 200, "message": message, "application": app })
+        ctx.JSON(code, gin.H{ "status": code, "message": message, "application": app })
+    })
+
+    // `DELETE` v2/applications/id -> Delete an application
+    s.AddRoute(server, "delete", "/v2/applications/:id", func(ctx *gin.Context) {
+        id, err := uuid.Parse(ctx.Param("id"))
+        if err != nil {
+            ctx.JSON(404, gin.H{ "status": 404, "error": err.Error() })
+            return
+        }
+
+        code, err := applications.Delete(db, id)
+        if err != nil {
+            ctx.JSON(code, gin.H{ "status": code, "error": err.Error() })
+            return
+        }
+
+        ctx.JSON(204, gin.H{ "status": 204, "message": "Application was deleted." })
     })
     
 

@@ -28,22 +28,23 @@ func New(name string, columns []string) *model.Application {
 // Insert an application into the database.
 // Object(id) should not exist in the database
 // already.
-func Insert(db *model.Database, app *model.Application) error {
+func Insert(db *model.Database, app *model.Application) (int, error) {
 	stmt, err := db.Conn.Prepare("INSERT INTO applications (id, name, columns, createdat, lastupdatedat) VALUES ($1, $2, $3, $4, $5);")
 	if err != nil {
-		return err
+		return 500, err
 	}
+	defer stmt.Close()
 	a := pq.StringArray(app.Columns)
 	res, err := stmt.Exec(app.ID, app.Name, a, app.CreatedAt, app.LastUpdatedAt)
 	if err != nil {
-		return err
+		return 500, err
 	}
 	count, err := res.RowsAffected()
 	if err != nil {
-		return err
+		return 500, err
 	}
 	if count < 1 {
-		return errors.New("Could not insert application into database.")
+		return 500, errors.New("Could not insert application into database.")
 	}
-	return nil
+	return 201, nil
 }
