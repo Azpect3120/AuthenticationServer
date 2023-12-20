@@ -10,7 +10,10 @@ import (
 
 // Deletes an application from the database
 // id should be parsed to a UUID to ensure
-// its validity.
+// its validity. The 'int' return on this
+// function is the HTTP status code which
+// should be sent back to the user upon
+// calling this function.
 func Delete (db *model.Database, id uuid.UUID) (int, error) {
 	stmt, err := db.Conn.Prepare("DELETE FROM applications WHERE id = $1;")
 	if err != nil {

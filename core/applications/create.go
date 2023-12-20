@@ -27,7 +27,10 @@ func New(name string, columns []string) *model.Application {
 
 // Insert an application into the database.
 // Object(id) should not exist in the database
-// already.
+// already. The 'int' return of this function
+// is the HTTP status code which should be 
+// send back to the client upon calling this 
+// function.
 func Insert(db *model.Database, app *model.Application) (int, error) {
 	stmt, err := db.Conn.Prepare("INSERT INTO applications (id, name, columns, createdat, lastupdatedat) VALUES ($1, $2, $3, $4, $5);")
 	if err != nil {

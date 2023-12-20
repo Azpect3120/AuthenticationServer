@@ -16,6 +16,21 @@ func main() {
 
     db := database.NewDatabase(DB_CONN_STRING)
 
+    // `GET` v2/applications/:id -> Gets an application
+    s.AddRoute(server, "get", "/v2/applications/:id", func(ctx *gin.Context) {
+        id, err := uuid.Parse(ctx.Param("id"))
+        if err != nil {
+            ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
+            return
+        }
+        app, code, err := applications.Retrieve(db, id)
+        if err != nil {
+            ctx.JSON(code, gin.H{ "status": code, "error": err.Error() })
+            return
+        }
+        ctx.JSON(code, gin.H{ "status": code, "application": app })
+    })
+
     
     // `POST` v2/applications -> Create an application
     s.AddRoute(server, "post", "/v2/applications", func(ctx *gin.Context) {
@@ -41,7 +56,7 @@ func main() {
     s.AddRoute(server, "delete", "/v2/applications/:id", func(ctx *gin.Context) {
         id, err := uuid.Parse(ctx.Param("id"))
         if err != nil {
-            ctx.JSON(404, gin.H{ "status": 404, "error": err.Error() })
+            ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
             return
         }
 
