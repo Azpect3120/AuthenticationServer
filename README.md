@@ -43,6 +43,14 @@
     - Created At
     - Last Updated At
     
-    NOTES: 
+    NOTES:
         - Pass an array of columns into the `POST` request
+        - Conert []string to pq.StringArray using `pq.StringArray()` method
 
+
+### Testing requests
+
+```sh
+    curl -X POST -H "Content-Type: application/json" -d '{"name": "Hello World", "columns": ["data", "email", "HELLO WORLD"]}' localhost:3000/v2/applications | json
+    curl -X POST -H "Content-Type: application/json" -d '{"name": "Hello World", "columns": ["data", "email", "password", "username", "username", "first", "first name", "last name", "hello world", "hi mom :)"]}' localhost:3000/v2/applications | json
+```
