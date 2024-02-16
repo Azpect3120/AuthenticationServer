@@ -9,14 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewServer(port int, connstring string) *model.Server {
+func NewServer(port int) *model.Server {
 	s := &model.Server{
 		Router: gin.Default(),
 		Config: cors.DefaultConfig(),
 		Port:   port,
 	}
-
-	// db := database.NewDatabase(connstring)
 
 	s.Config.AllowOrigins = []string{"*"}
 	s.Router.Use(cors.New(s.Config))
