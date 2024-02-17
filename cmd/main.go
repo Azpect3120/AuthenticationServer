@@ -267,7 +267,11 @@ func main() {
       return
     }
 
-    ctx.JSON(code, gin.H{"status": code, "message": fmt.Sprintf("%s. User credentials were successfully validated.", message), "user": user})
+    if message != "" {
+      ctx.JSON(code, gin.H{"status": code, "message": fmt.Sprintf("User credentials were successfully validated. However, %s", message), "user": user})
+      return
+    }
+    ctx.JSON(code, gin.H{"status": code, "message": "User credentials were successfully validated", "user": user})
   })
 
 	s.Listen(server)
