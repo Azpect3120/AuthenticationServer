@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"reflect"
 	"time"
 
@@ -12,14 +14,16 @@ import (
 	"github.com/Azpect3120/AuthenticationServer/core/users"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 )
-
-const DB_CONN_STRING string = "postgres://lnnhgkzj:N6L1rYn7uRZmG7N9HGnWDyhRogxVCyRb@bubble.db.elephantsql.com/lnnhgkzj"
 
 func main() {
 	server := s.NewServer(3000)
 
-	db := database.NewDatabase(DB_CONN_STRING)
+  if err := godotenv.Load(); err != nil {
+    log.Fatalln(err.Error())
+  }
+	db := database.NewDatabase(os.Getenv("DB_URL"))
 
 	// `GET` v2/applications/:id -> Gets an application
 	s.AddRoute(server, "get", "/v2/applications/:id", func(ctx *gin.Context) {
