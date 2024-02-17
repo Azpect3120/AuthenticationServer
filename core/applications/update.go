@@ -2,11 +2,13 @@ package applications
 
 import (
 	"errors"
+	"fmt"
 	"time"
+
+	"database/sql"
 
 	"github.com/Azpect3120/AuthenticationServer/core/model"
 	"github.com/google/uuid"
-  "database/sql"
 	"github.com/lib/pq"
 )
 
@@ -21,15 +23,19 @@ func Update (db *model.Database, id uuid.UUID, name string, columns []string) (*
   var message string
   params = append(params, time.Now().UTC())
 
+  var idIndex int = 2
+
   if name != "" {
-    sqlString += " name = $2,"
+    sqlString += fmt.Sprintf(" name = $%d,", idIndex)
     params = append(params, name)
+    idIndex++
   }
 
   if len(columns) > 0 {
-    sqlString += " columns = columns || $3,"
+    sqlString += fmt.Sprintf(" columns = columns || $%d,", idIndex)
     message = MatchColumns(&columns)
     params = append(params, pq.Array(columns))
+    idIndex++
   }
 
   if name == "" && len(columns) == 0 {
@@ -37,7 +43,7 @@ func Update (db *model.Database, id uuid.UUID, name string, columns []string) (*
   }
 
   params = append(params, id)
-  sqlString += " lastupdatedat = $1 WHERE id = $4 RETURNING *;"
+  sqlString += fmt.Sprintf(" lastupdatedat = $1 WHERE id = $%d RETURNING *;", idIndex)
 
   stmt, err := db.Conn.Prepare(sqlString)
   if err != nil {
