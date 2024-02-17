@@ -16,9 +16,9 @@ type User struct {
 	ID            uuid.UUID `json:"id"`
 	ApplicationID uuid.UUID `json:"applicationID"`
   Username      string    `json:"username"`
-  FirstName     string    `json:"firstname"`
-  LastName      string    `json:"lastname"`
-  FullName      string    `json:"fullname"`
+  First         string    `json:"first"`
+  Last          string    `json:"last"`
+  Full          string    `json:"full"`
   Email         string    `json:"email"`
   Password      string    `json:"password"`
   Data          string    `json:"data"`
@@ -28,9 +28,9 @@ type User struct {
 
 type UserData struct {
   Username      string    `json:"username"`
-  FirstName     string    `json:"firstname"`
-  LastName      string    `json:"lastname"`
-  FullName      string    `json:"fullname"`
+  First         string    `json:"first"`
+  Last          string    `json:"last"`
+  Full          string    `json:"full"`
   Email         string    `json:"email"`
   Password      string    `json:"password"`
   Data          string    `json:"data"`

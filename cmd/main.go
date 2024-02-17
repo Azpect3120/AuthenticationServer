@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/Azpect3120/AuthenticationServer/core/applications"
 	"github.com/Azpect3120/AuthenticationServer/core/database"
 	"github.com/Azpect3120/AuthenticationServer/core/model"
@@ -219,6 +221,29 @@ func main() {
     }
 
     ctx.JSON(204, gin.H{"status": 204, "message": "User was deleted."})
+  })
+
+  // `POST` v2/applications/:id/validation -> Validate a user's login credentials
+  s.AddRoute(server, "post", "/v2/applications/:id/validate", func(ctx *gin.Context) {
+		id, err := uuid.Parse(ctx.Param("id"))
+		if err != nil {
+			ctx.JSON(400, gin.H{"status": 400, "error": err.Error()})
+			return
+		}
+
+		var req model.ValidateUserRequest
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(404, gin.H{"status": 404, "error": err.Error()})
+			return
+		}
+
+    user, message, code, err := users.ValidateLogin(db, id, req.Columns, &req.User)
+    if err != nil {
+      ctx.JSON(code, gin.H{"status": code, "message": message, "error": err.Error()})
+      return
+    }
+
+    ctx.JSON(code, gin.H{"status": code, "message": fmt.Sprintf("%s. User credentials were successfully validated.", message), "user": user})
   })
 
 	s.Listen(server)

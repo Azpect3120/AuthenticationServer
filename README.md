@@ -28,6 +28,10 @@
 
 `DELETE` v2/applications/:id -> Deletes an application
 
+### Validation
+`POST` v2/applications/:id/validate -> Validate a user object
+- Should have a map or array or something that determines which values need to be checked.
+
 ## Models
 
 ### User

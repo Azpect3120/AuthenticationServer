@@ -13,9 +13,9 @@ var COLUMNS = map[string]string{
     "id":            "ID",
     "applicationid": "ApplicationID",
     "username":      "Username",
-    "firstname":     "FirstName",
-    "lastname":      "LastName",
-    "fullname":      "FullName",
+    "first":         "First",
+    "last":          "Last",
+    "full":          "Full",
     "email":         "Email",
     "password":      "Password",
     "data":          "Data",
@@ -33,7 +33,19 @@ func Retrieve (db *model.Database, id uuid.UUID, uid uuid.UUID) (*map[string]str
   defer stmt.Close()
 
   var user model.User = model.User{}
-  if err := stmt.QueryRow(uid, id).Scan(&user.ID, &user.ApplicationID, &user.Username, &user.FirstName, &user.LastName, &user.FullName, &user.Email, &user.Password, &user.Data, &user.CreatedAt, &user.LastUpdatedAt); err != nil {
+  if err := stmt.QueryRow(uid, id).Scan(
+    &user.ID,
+    &user.ApplicationID,
+    &user.Username,
+    &user.First,
+    &user.Last,
+    &user.Full,
+    &user.Email,
+    &user.Password,
+    &user.Data,
+    &user.CreatedAt,
+    &user.LastUpdatedAt,
+  ); err != nil {
     return nil, 404, err
   }
 
@@ -85,7 +97,7 @@ func RetrieveAll (db *model.Database, id uuid.UUID) ([]map[string]string, int, e
   
   for rows.Next() {
     var user model.User = model.User{}
-    if err := rows.Scan(&user.ID, &user.ApplicationID, &user.Username, &user.FirstName, &user.LastName, &user.FullName, &user.Email, &user.Password, &user.Data, &user.CreatedAt, &user.LastUpdatedAt); err != nil {
+    if err := rows.Scan(&user.ID, &user.ApplicationID, &user.Username, &user.First, &user.Last, &user.Full, &user.Email, &user.Password, &user.Data, &user.CreatedAt, &user.LastUpdatedAt); err != nil {
       return nil, 404, err
     }
 
