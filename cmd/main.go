@@ -198,5 +198,28 @@ func main() {
 		ctx.JSON(code, gin.H{"status": code, "message": "User was created.", "user": user})
 	})
 
+  // `DELETE` v2/applications/:id/users/:uid -> Delete a user from an application
+  s.AddRoute(server, "delete", "/v2/applications/:id/users/:uid", func(ctx *gin.Context) {
+		id, err := uuid.Parse(ctx.Param("id"))
+		if err != nil {
+			ctx.JSON(400, gin.H{"status": 400, "error": err.Error()})
+			return
+		}
+
+		uid, err := uuid.Parse(ctx.Param("uid"))
+		if err != nil {
+			ctx.JSON(400, gin.H{"status": 400, "error": err.Error()})
+			return
+		}
+
+    code, err := users.Delete(db, id, uid)
+    if err != nil {
+      ctx.JSON(code, gin.H{"status": code, "error": err.Error()})
+      return
+    }
+
+    ctx.JSON(204, gin.H{"status": 204, "message": "User was deleted."})
+  })
+
 	s.Listen(server)
 }

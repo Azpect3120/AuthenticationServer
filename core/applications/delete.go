@@ -5,6 +5,7 @@ import (
 
 	"github.com/Azpect3120/AuthenticationServer/core/model"
 	"github.com/google/uuid"
+  "github.com/lib/pq"
 )
 
 // Deletes an application from the database
@@ -19,8 +20,12 @@ func Delete (db *model.Database, id uuid.UUID) (int, error) {
 		return 500, err
 	}
 	defer stmt.Close()
-	res, err := stmt.Exec(id.String())
+	res, err := stmt.Exec(id)
 	if err != nil {
+    pqErr, ok := err.(*pq.Error)
+    if ok && pqErr.Code == "23503" && pqErr.Constraint == "users_applicationid_fkey" {
+      return 409, errors.New("Cannot delete applications with users.")
+    }
 		return 500, err
 	}
 	count, err := res.RowsAffected()
