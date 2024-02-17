@@ -18,7 +18,7 @@ func MatchColumns (c *[]string) (msg string) {
     var valid []string = make([]string, 0, len(*c))
     for _, col := range *c {
         switch strings.TrimSpace(strings.ToLower(col)) {
-            case "username", "first", "last", "full", "email", "password", "data":
+            case "username", "first", "last", "full", "email", "password", "data", "id", "applicationid", "createdat", "lastupdatedat":
                 valid = append(valid, strings.TrimSpace(strings.ToLower(col)))
             case "first name": 
                 valid = append(valid, "first")

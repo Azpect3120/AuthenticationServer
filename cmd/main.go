@@ -78,11 +78,25 @@ func main() {
 
   // `PUT` v2/applications/:id -> Updates/Overwrites an application. Requires all fields.
   s.AddRoute(server, "put", "/v2/applications/:id", func(ctx *gin.Context) {
-    _, err := uuid.Parse(ctx.Param("id"))
+    id, err := uuid.Parse(ctx.Param("id"))
     if err != nil {
       ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
       return
     }
+
+    var req model.ModifyApplicationRequest
+    if err := ctx.ShouldBindJSON(&req); err != nil {
+      ctx.JSON(404, gin.H{ "status": 404, "error": err.Error() })
+      return
+    }
+
+    app, message, code, err := applications.Overwrite(db, id, req.Name, req.Columns)
+    if err != nil {
+      ctx.JSON(code, gin.H{ "status": code, "error": err.Error() })
+      return
+    }
+
+    ctx.JSON(code, gin.H{ "status": code, "message": message, "application": app })
 
   })
 
