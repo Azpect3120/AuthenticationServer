@@ -129,7 +129,41 @@ func main() {
   })
 
 
+  // `GET` v2/applications/:id/users/:id -> Get a user from an application
+  s.AddRoute(server, "get", "/v2/applications/:id/users/:uid", func(ctx *gin.Context) {
+    id, err := uuid.Parse(ctx.Param("id"))
+    if err != nil {
+      ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
+      return
+    }
+
+    uid, err := uuid.Parse(ctx.Param("uid"))
+    if err != nil {
+      ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
+      return
+    }
+
+    data, code, err := users.Retrieve(db, id, uid)
+    if err != nil {
+      ctx.JSON(code, gin.H{ "status": code, "error": err.Error() })
+      return
+    }
+
+    ctx.JSON(code, gin.H{ "status": code, "user": data })
+  })
+
+
   // `GET` v2/applications/:id/users -> Get all users for an application
+  s.AddRoute(server, "get", "/v2/applications/:id/users", func(ctx *gin.Context) {
+    id, err := uuid.Parse(ctx.Param("id"))
+    if err != nil {
+      ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
+      return
+    }
+
+    println(id.String())
+
+  })
 
   // `POST` v2/applications/:id/users -> Create a user for an applications
   s.AddRoute(server, "post", "/v2/applications/:id/users", func(ctx *gin.Context) {

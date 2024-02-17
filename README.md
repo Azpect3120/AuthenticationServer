@@ -16,6 +16,8 @@
 `DELETE` v2/applications/:appid/users/:userid -> Deletes a user
 
 ### Applications
+`GET` v2/applications -> Returns a list of active applications
+
 `GET` v2/applications/:id -> Return application object
 
 `POST` v2/applications -> Create an application
@@ -25,9 +27,6 @@
 `PUT` v2/applications/:id -> Updates an ENTIRE application object (requires all fields)
 
 `DELETE` v2/applications/:id -> Deletes an application
-
-### Admin Endpointes
-`GET` v2/applications -> Returns a list of active applications
 
 ## Models
 
