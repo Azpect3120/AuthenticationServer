@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"reflect"
+	"time"
 
 	"github.com/Azpect3120/AuthenticationServer/core/applications"
 	"github.com/Azpect3120/AuthenticationServer/core/database"
@@ -197,7 +199,29 @@ func main() {
 			return
 		}
 
-		ctx.JSON(code, gin.H{"status": code, "message": "User was created.", "user": user})
+    appColumns, err := users.GetApplicationColumns(db, user.ApplicationID)
+    if err != nil {
+      ctx.JSON(500, gin.H{"status": 500, "error": err.Error()})
+      return
+    }
+
+    providedColumns := make(map[string]string)
+
+    for _, col := range appColumns {
+      val := reflect.ValueOf(*user).FieldByName(users.COLUMNS[col])
+      var fieldValue string
+      switch val.Interface().(type) {
+      case uuid.UUID:
+        fieldValue = val.Interface().(uuid.UUID).String()
+      case time.Time:
+        fieldValue = val.Interface().(time.Time).String()
+      default:
+        fieldValue = val.String()
+    }
+      providedColumns[col] = fieldValue
+    }
+
+		ctx.JSON(code, gin.H{"status": code, "message": "User was created.", "user": providedColumns})
 	})
 
   // `DELETE` v2/applications/:id/users/:uid -> Delete a user from an application

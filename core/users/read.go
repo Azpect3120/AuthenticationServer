@@ -33,23 +33,11 @@ func Retrieve (db *model.Database, id uuid.UUID, uid uuid.UUID) (*map[string]str
   defer stmt.Close()
 
   var user model.User = model.User{}
-  if err := stmt.QueryRow(uid, id).Scan(
-    &user.ID,
-    &user.ApplicationID,
-    &user.Username,
-    &user.First,
-    &user.Last,
-    &user.Full,
-    &user.Email,
-    &user.Password,
-    &user.Data,
-    &user.CreatedAt,
-    &user.LastUpdatedAt,
-  ); err != nil {
+  if err := stmt.QueryRow(uid, id).Scan(&user.ID, &user.ApplicationID, &user.Username, &user.First, &user.Last, &user.Full, &user.Email, &user.Password, &user.Data, &user.CreatedAt, &user.LastUpdatedAt); err != nil {
     return nil, 404, err
   }
 
-  appColumns, err := getApplicationColumns(db, user.ApplicationID)
+  appColumns, err := GetApplicationColumns(db, user.ApplicationID)
   if err != nil {
     return nil, 500, err
   }
@@ -82,7 +70,7 @@ func RetrieveAll (db *model.Database, id uuid.UUID) ([]map[string]string, int, e
   }
   defer stmt.Close()
 
-  appColumns, err := getApplicationColumns(db, id)
+  appColumns, err := GetApplicationColumns(db, id)
   if err != nil {
     return nil, 500, err
   }

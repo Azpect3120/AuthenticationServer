@@ -16,7 +16,7 @@ import (
 // the application's columns. Returns a message and
 // status code for use in the response.
 func Validate (db *model.Database, appId uuid.UUID, user *model.User) (string, int, error) {
-  requiredColumns, err := getApplicationColumns(db, appId)
+  requiredColumns, err := GetApplicationColumns(db, appId)
   if err != nil {
     if errors.Is(err, sql.ErrNoRows) {
       return "Application not found", 404, err
@@ -48,7 +48,7 @@ func Validate (db *model.Database, appId uuid.UUID, user *model.User) (string, i
 }
 
 // Retrieves a user from the database based on the given ID.
-func getApplicationColumns (db *model.Database, appId uuid.UUID) ([]string, error) {
+func GetApplicationColumns (db *model.Database, appId uuid.UUID) ([]string, error) {
   stmt, err := db.Conn.Prepare("SELECT columns FROM applications WHERE id = $1;")
   if err != nil {
     return []string{}, err
