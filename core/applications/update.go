@@ -56,7 +56,12 @@ func Update (db *model.Database, id uuid.UUID, name string, columns []string) (*
   }
   app.Columns = []string(updatedColumns)
 
-  return &app, message, 200, nil
+  validatedApp, code, err := Validate(db, id)
+  if err != nil {
+    return nil, "", code, err
+  }
+
+  return validatedApp, message, code, nil
 }
 
 // Overwrites an application in the database. The 'id' parameter
@@ -107,5 +112,10 @@ func Overwrite (db *model.Database, id uuid.UUID, name string, columns []string)
   }
   app.Columns = []string(updatedColumns)
 
-  return &app, message, 200, nil
+  validatedApp, code, err := Validate(db, id)
+  if err != nil {
+    return nil, "", code, err
+  }
+
+  return validatedApp, message, code, nil
 }

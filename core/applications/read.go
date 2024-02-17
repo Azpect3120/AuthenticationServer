@@ -1,6 +1,9 @@
 package applications
 
 import (
+	"database/sql"
+	"errors"
+
 	"github.com/Azpect3120/AuthenticationServer/core/model"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
@@ -69,4 +72,36 @@ func RetrieveAll (db *model.Database) ([]*model.Application, int, error) {
   }
 
   return apps, 200, nil
+}
+
+// Validates an application to ensure the required
+// fields are present and no duplicate columns are 
+// present. The 'int' return of this function is the 
+// HTTP status code that should be sent back to the 
+// user upon calling this function.
+func Validate (db *model.Database, id uuid.UUID) (*model.Application, int, error) {
+  sqlString := "SELECT * FROM applications WHERE id = $1;"
+
+  stmt, err := db.Conn.Prepare(sqlString)
+  if err != nil {
+    return nil, 500, err
+  }
+  defer stmt.Close()
+
+  var app *model.Application = &model.Application{}
+  var columns pq.StringArray
+
+  if err = stmt.QueryRow(id.String()).Scan(&app.ID, &app.Name, &columns, &app.CreatedAt, &app.LastUpdatedAt); err != nil {
+    if errors.Is(err, sql.ErrNoRows) {
+      return nil, 404, errors.New("Application not found.")
+    }
+    return nil, 500, err
+  }
+
+  app.Columns = []string(columns)
+  app.Columns = append(app.Columns, []string{"id", "applicationid", "createdat", "lastupdatedat"}...)
+
+  MatchColumns(&app.Columns)
+
+  return app, 200, nil
 }
