@@ -63,6 +63,48 @@ func Retrieve (db *model.Database, id uuid.UUID, uid uuid.UUID) (*map[string]str
 
 // Retrieves all users from the database based on 
 // the given application ID.
-func RetrieveAll (db *model.Database, id uuid.UUID) {
+func RetrieveAll (db *model.Database, id uuid.UUID) ([]map[string]string, int, error) {
+  stmt, err := db.Conn.Prepare("SELECT * FROM users WHERE applicationid = $1;")
+  if err != nil {
+    return nil, 500, err
+  }
+  defer stmt.Close()
 
+  appColumns, err := getApplicationColumns(db, id)
+  if err != nil {
+    return nil, 500, err
+  }
+
+  rows, err := stmt.Query(id)
+  if err != nil {
+    return nil, 404, err
+  }
+  defer rows.Close()
+
+  providedColumns := make([]map[string]string, 0)
+  
+  for rows.Next() {
+    var user model.User = model.User{}
+    if err := rows.Scan(&user.ID, &user.ApplicationID, &user.Username, &user.FirstName, &user.LastName, &user.FullName, &user.Email, &user.Password, &user.Data, &user.CreatedAt, &user.LastUpdatedAt); err != nil {
+      return nil, 404, err
+    }
+
+    mapColumns := make(map[string]string)
+    for _, col := range appColumns {
+      val := reflect.ValueOf(user).FieldByName(COLUMNS[col])
+      var fieldValue string
+      switch val.Interface().(type) {
+        case uuid.UUID:
+          fieldValue = val.Interface().(uuid.UUID).String()
+        case time.Time:
+          fieldValue = val.Interface().(time.Time).String()
+        default:
+          fieldValue = val.String()
+      }
+      mapColumns[col] = fieldValue
+    }
+    providedColumns = append(providedColumns, mapColumns)
+  }
+
+  return providedColumns, 200, nil
 }
