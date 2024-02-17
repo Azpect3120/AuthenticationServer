@@ -2,7 +2,6 @@ package applications
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/Azpect3120/AuthenticationServer/core/model"
 	"github.com/google/uuid"
@@ -29,7 +28,7 @@ func Delete (db *model.Database, id uuid.UUID) (int, error) {
 		return 500, err
 	}
 	if count < 1 {
-		return 404, errors.New(fmt.Sprintf("Could not find an application with the id: '%s'", id))
+		return 404, errors.New("Application not found.")
 	}
 	return 204, nil
 }

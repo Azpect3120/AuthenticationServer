@@ -44,7 +44,7 @@ func removeDuplicates (s *[]string) (msg string) {
     var contents map[string]struct{} = make(map[string]struct{})
     var valid []string = make([]string, 0, len(*s))
     for _, col := range *s {
-        fmt.Println(col)
+        // fmt.Println(col)
         if _, exists := contents[col]; !exists {
             contents[col] = struct{}{}
             valid = append(valid, col)

@@ -52,6 +52,40 @@ func main() {
     ctx.JSON(code, gin.H{ "status": code, "message": message, "application": app })
   })
 
+  // `PATCH` v2/applications/:id -> Updates an application. 
+  // Only provided fields will be updated.
+  s.AddRoute(server, "patch", "/v2/applications/:id", func(ctx *gin.Context) {
+    id, err := uuid.Parse(ctx.Param("id"))
+    if err != nil {
+      ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
+      return
+    }
+
+    var req model.ModifyApplicationRequest
+    if err := ctx.ShouldBindJSON(&req); err != nil {
+      ctx.JSON(404, gin.H{ "status": 404, "error": err.Error() })
+      return
+    }
+
+    app, message, code, err := applications.Update(db, id, req.Name, req.Columns)
+    if err != nil {
+      ctx.JSON(code, gin.H{ "status": code, "error": err.Error() })
+      return
+    }
+
+    ctx.JSON(code, gin.H{ "status": code, "message": message, "application": app })
+  })
+
+  // `PUT` v2/applications/:id -> Updates/Overwrites an application. Requires all fields.
+  s.AddRoute(server, "put", "/v2/applications/:id", func(ctx *gin.Context) {
+    _, err := uuid.Parse(ctx.Param("id"))
+    if err != nil {
+      ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
+      return
+    }
+
+  })
+
   // `DELETE` v2/applications/id -> Delete an application
   s.AddRoute(server, "delete", "/v2/applications/:id", func(ctx *gin.Context) {
     id, err := uuid.Parse(ctx.Param("id"))
@@ -76,7 +110,7 @@ func main() {
       ctx.JSON(code, gin.H{ "status": code, "error": err.Error() })
       return
     }
-    ctx.JSON(code, gin.H{ "status": code, "applications": apps })
+    ctx.JSON(code, gin.H{ "status": code, "applications": apps, "count": len(apps) })
   })
 
 
