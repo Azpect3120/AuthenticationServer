@@ -5,6 +5,7 @@ import (
 	"github.com/Azpect3120/AuthenticationServer/core/database"
 	"github.com/Azpect3120/AuthenticationServer/core/model"
 	s "github.com/Azpect3120/AuthenticationServer/core/server"
+	"github.com/Azpect3120/AuthenticationServer/core/users"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
@@ -127,6 +128,38 @@ func main() {
     ctx.JSON(code, gin.H{ "status": code, "applications": apps, "count": len(apps) })
   })
 
+
+  // `GET` v2/applications/:id/users -> Get all users for an application
+
+  // `POST` v2/applications/:id/users -> Create a user for an applications
+  s.AddRoute(server, "post", "/v2/applications/:id/users", func(ctx *gin.Context) {
+    id, err := uuid.Parse(ctx.Param("id"))
+    if err != nil {
+      ctx.JSON(400, gin.H{ "status": 400, "error": err.Error() })
+      return
+    }
+
+    var req model.UserData
+    if err := ctx.ShouldBindJSON(&req); err != nil {
+      ctx.JSON(404, gin.H{ "status": 404, "error": err.Error() })
+      return
+    }
+
+    user := users.New(id, &req)
+    message, code, err := users.Validate(db, id, user)
+    if err != nil {
+      ctx.JSON(code, gin.H{ "status": code, "message": message, "error": err.Error() })
+      return
+    }
+
+    code, err = users.Insert(db, user)
+    if err != nil {
+      ctx.JSON(code, gin.H{ "status": code, "error": err.Error() })
+      return
+    }
+
+    ctx.JSON(code, gin.H{ "status": code, "message": "User was created.", "user": user })
+  })
 
   s.Listen(server)
 }
