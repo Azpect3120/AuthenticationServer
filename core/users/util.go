@@ -47,7 +47,7 @@ func Validate (db *model.Database, appId uuid.UUID, user *model.User) (string, i
   return "", 200, nil
 }
 
-// Retrieves a user from the database based on the given ID.
+// Retrieves a list of the valid columns for an application based on the given ID.
 func GetApplicationColumns (db *model.Database, appId uuid.UUID) ([]string, error) {
   stmt, err := db.Conn.Prepare("SELECT columns FROM applications WHERE id = $1;")
   if err != nil {

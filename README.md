@@ -11,7 +11,7 @@
 
 `PATCH` v2/applications/:appid/users/:userid -> Update PIECES of a user object (does not require all fields)
 
-`PUT` v2/applications/:appid/users/:userid -> Update an ENTIRE user object (requires all fields)
+`PUT` v2/applications/:appid/users/:userid -> Update an ENTIRE user object (requires all fields) I think I don't need this
 
 `DELETE` v2/applications/:appid/users/:userid -> Deletes a user
 

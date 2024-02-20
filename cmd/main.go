@@ -228,6 +228,35 @@ func main() {
 		ctx.JSON(code, gin.H{"status": code, "message": "User was created.", "user": providedColumns})
 	})
 
+  // `PATCH` v2/applications/:id/users/:uid -> Updates a user in an application
+  s.AddRoute(server, "patch", "/v2/applications/:id/users/:uid", func(ctx *gin.Context) {
+		id, err := uuid.Parse(ctx.Param("id"))
+		if err != nil {
+			ctx.JSON(400, gin.H{"status": 400, "error": err.Error()})
+			return
+		}
+
+		uid, err := uuid.Parse(ctx.Param("uid"))
+		if err != nil {
+			ctx.JSON(400, gin.H{"status": 400, "error": err.Error()})
+			return
+		}
+
+    var req model.UserData
+    if err := ctx.ShouldBindJSON(&req); err != nil {
+      ctx.JSON(404, gin.H{"status": 404, "error": err.Error()})
+      return
+    }
+
+    user, code, err := users.Update(db, id, uid, &req)
+    if err != nil {
+      ctx.JSON(code, gin.H{"status": code, "error": err.Error()})
+      return
+    }
+
+    ctx.JSON(code, gin.H{"status": code, "message": "User was updated.", "user": user})
+  })
+
   // `DELETE` v2/applications/:id/users/:uid -> Delete a user from an application
   s.AddRoute(server, "delete", "/v2/applications/:id/users/:uid", func(ctx *gin.Context) {
 		id, err := uuid.Parse(ctx.Param("id"))
