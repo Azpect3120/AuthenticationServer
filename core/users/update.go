@@ -2,6 +2,7 @@ package users
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/Azpect3120/AuthenticationServer/core/model"
 	"github.com/google/uuid"
@@ -66,13 +67,13 @@ func Update (db *model.Database, id uuid.UUID, uid uuid.UUID, data *model.UserDa
     }
   }
 
-  stmt, err = db.Conn.Prepare("UPDATE users SET username = $1, firstname = $2, lastname = $3, fullname = $4, email = $5, password = $6, data = $7 WHERE id = $8 AND applicationid = $9 RETURNING *;")
+  stmt, err = db.Conn.Prepare("UPDATE users SET username = $1, firstname = $2, lastname = $3, fullname = $4, email = $5, password = $6, data = $7, lastupdatedat = $8 WHERE id = $9 AND applicationid = $10 RETURNING *;")
   if err != nil {
     return nil, 500, err
   }
   defer stmt.Close()
 
-  if err := stmt.QueryRow(user.Username, user.First, user.Last, user.Full, user.Email, user.Password, user.Data, uid, id).Scan(&user.ID, &user.ApplicationID, &user.Username, &user.First, &user.Last, &user.Full, &user.Email, &user.Password, &user.Data, &user.CreatedAt, &user.LastUpdatedAt); err != nil {
+  if err := stmt.QueryRow(user.Username, user.First, user.Last, user.Full, user.Email, user.Password, user.Data, time.Now().UTC(), uid, id).Scan(&user.ID, &user.ApplicationID, &user.Username, &user.First, &user.Last, &user.Full, &user.Email, &user.Password, &user.Data, &user.CreatedAt, &user.LastUpdatedAt); err != nil {
     return nil, 500, err
   }
 
