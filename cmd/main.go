@@ -18,15 +18,16 @@ import (
 )
 
 func main() {
+  if err := godotenv.Load(); err != nil {
+    log.Fatalln(err.Error())
+  }
+
   port := os.Getenv("AUTH_SERVER_PORT")
   if port == "" {
     port = "3000"
   }
 	server := s.NewServer(port)
 
-  if err := godotenv.Load(); err != nil {
-    log.Fatalln(err.Error())
-  }
 	db := database.NewDatabase(os.Getenv("DB_URL"))
 
 	// `GET` v2/applications/:id -> Gets an application
