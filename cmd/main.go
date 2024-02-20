@@ -18,7 +18,11 @@ import (
 )
 
 func main() {
-	server := s.NewServer(3000)
+  port := os.Getenv("AUTH_SERVER_PORT")
+  if port == "" {
+    port = "3000"
+  }
+	server := s.NewServer(port)
 
   if err := godotenv.Load(); err != nil {
     log.Fatalln(err.Error())

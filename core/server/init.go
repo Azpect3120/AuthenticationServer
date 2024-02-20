@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewServer(port int) *model.Server {
+func NewServer(port string) *model.Server {
 	s := &model.Server{
 		Router: gin.Default(),
 		Config: cors.DefaultConfig(),
@@ -43,5 +43,5 @@ func AddRoute (s *model.Server, method, endpoint string, handler func(*gin.Conte
 }
 
 func Listen (s *model.Server) error {
-    return s.Router.Run(fmt.Sprintf(":%d", s.Port))
+    return s.Router.Run(fmt.Sprintf(":%s", s.Port))
 }

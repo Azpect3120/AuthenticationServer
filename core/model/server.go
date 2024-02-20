@@ -8,6 +8,6 @@ import (
 type Server struct {
 	Router *gin.Engine
 	Config cors.Config
-	Port   int
+	Port   string
 }
 
