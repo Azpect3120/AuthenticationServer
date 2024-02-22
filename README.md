@@ -121,6 +121,8 @@ reading, updating, and deleting applications and users. The server also provides
 authenticating users and applications. The server logs user and application activity to the stdout.
 Applications are used to group users together and provide a way to manage user access to resources.
 The owner of this server is responsible for managing applications and the data stored within them.
+
+
 The data stored in the applications is dynamic and can be used to store the most common data as well 
 as a wild card `data` field for custom data. Any data stored in the `data` field is expected to be 
 a string, which can be handled on the front end as needed, a stringified JSON object for example.
