@@ -27,7 +27,6 @@ func ValidateLogin(db *model.Database, id uuid.UUID, columns []string, user *mod
 	if columns[0] == "password" {
 		fieldValue = reflect.ValueOf(HashString(fieldValue.String()))
 	}
-	fmt.Printf("SELECT * FROM users WHERE applicationid = $1 AND %s = '%s';\n", columns[0], fieldValue.String())
 
 	stmt, err := db.Conn.Prepare(fmt.Sprintf("SELECT * FROM users WHERE applicationid = $1 AND %s = '%s';", columns[0], fieldValue.String()))
 	if err != nil {
