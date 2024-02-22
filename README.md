@@ -129,6 +129,15 @@ a string, which can be handled on the front end as needed, a stringified JSON ob
 The server will not validate the data stored in the `data` field, it is up to the owner of the server
 to validate and parse the data as needed.
 
+Valid data columns are:
+-  `username` : The username of the user
+-  `first` : The first name of the user
+-  `last` : The last name of the user
+-  `full` : The full name of the user
+-  `email` : The email of the user
+-  `password` : The password of the user
+-  `data` : Wild card data field for custom data
+
 ### Applications
 
 ### Users
