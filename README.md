@@ -146,29 +146,29 @@ the `lastupdatedat` column is the timestamp of when the user was last updated.
 
 ### Applications
 
-- `GET /v2/applications` : Get all applications. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `GET /v2/applications` : Get all applications. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#get-all-applications)
 
-- `GET /v2/applications/:id` : Get an application by id. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `GET /v2/applications/:id` : Get an application by id. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#get-an-application)
 
-- `POST /v2/applications` : Create a new application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `POST /v2/applications` : Create a new application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#create-an-application)
 
-- `PATCH /v2/applications/:id` : Update part of an application by id. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `PATCH /v2/applications/:id` : Update part of an application by id. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#update-an-application-(part)
 
-- `PUT /v2/applications/:id` : Update an entire application by id. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `PUT /v2/applications/:id` : Update an entire application by id. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#update-an-application-(full)
 
-- `DELETE /v2/applications/:id` : Delete an application by id. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `DELETE /v2/applications/:id` : Delete an application by id. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#delete-an-application)
 
 ### Users
 
-- `GET /v2/applications/:id/users` : Get all users in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `GET /v2/applications/:id/users` : Get all users in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#get-all-users)
 
-- `GET /v2/applications/:id/users/:id` : Get a user by id in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `GET /v2/applications/:id/users/:id` : Get a user by id in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#get-a-user)
 
-- `POST /v2/applications/:id/users` : Create a new user in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `POST /v2/applications/:id/users` : Create a new user in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#create-a-user)
 
-- `PATCH /v2/applications/:id/users/:id` : Update part of a user by id in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `PATCH /v2/applications/:id/users/:id` : Update part of a user by id in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#update-a-user)
 
-- `DELETE /v2/applications/:id/users/:id` : Delete a user by id in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
+- `DELETE /v2/applications/:id/users/:id` : Delete a user by id in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#delete-a-user)
 
 
 ## 🗝 Contributing

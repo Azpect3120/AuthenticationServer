@@ -18,6 +18,9 @@
 ## Application Examples
 
 ### Get All Applications
+
+Gets all applications in the database.
+
 ```http
 GET /v2/applications
 ```
@@ -49,7 +52,78 @@ Example Response:
 
 ### Get an Application
 
+Gets an application using its ID.
+
+```http
+GET /v2/applications/:id
+```
+
+Example Response:
+```json
+{
+  "application": {
+    "id": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "name": "Test Application",
+    "columns": [
+      "id",
+      "applicationid",
+      "username",
+      "password",
+      "email",
+      "createdat",
+      "lastupdatedat"
+    ],
+    "createdat": "2024-02-17T04:00:24.716294Z",
+    "lastupdatedat": "2024-02-17T04:00:24.716294Z"
+  },
+  "status": 200
+}
+```
+
 ### Create an Application
+
+Creates a new application. List of valid columns can be found in the [README](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/README.md#overview).
+
+```http
+POST /v2/applications
+```
+
+Request Body:
+
+-  `name` (string) : The name of the application. **REQUIRED**
+-  `columns` ([]string) : The columns of the application. **REQUIRED**
+
+```json
+{
+  "name": "Test Application",
+  "columns": [
+    "username",
+    "password",
+    "email",
+  ]
+}
+```
+Example Response:
+```json
+{
+  "application": {
+    "id": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "name": "Test Application",
+    "columns": [
+      "id",
+      "applicationid",
+      "username",
+      "password",
+      "email",
+      "createdat",
+      "lastupdatedat"
+    ],
+    "createdat": "2024-02-17T04:00:24.716294Z",
+    "lastupdatedat": "2024-02-17T04:00:24.716294Z"
+  },
+  "status": 201
+}
+```
 
 ### Update an Application (Part)
 
