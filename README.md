@@ -148,15 +148,15 @@ the `lastupdatedat` column is the timestamp of when the user was last updated.
 
 - `GET /v2/applications` : Get all applications [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
 
-- `GET /v2/applications/:id` : Get an application by id
+- `GET /v2/applications/:id` : Get an application by id [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
 
-- `POST /v2/applications` : Create a new application
+- `POST /v2/applications` : Create a new application [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
 
-- `PATCH /v2/applications/:id` : Update part of an application by id
+- `PATCH /v2/applications/:id` : Update part of an application by id [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
 
-- `PUT /v2/applications/:id` : Update an entire application by id
+- `PUT /v2/applications/:id` : Update an entire application by id [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
 
-- `DELETE /v2/applications/:id` : Delete an application by id
+- `DELETE /v2/applications/:id` : Delete an application by id [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md)
 
 ### Users
 
