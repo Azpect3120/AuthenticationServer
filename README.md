@@ -146,6 +146,18 @@ the `lastupdatedat` column is the timestamp of when the user was last updated.
 
 ### Applications
 
+- `GET /v2/applications` : Get all applications (e.g)[https://github.com/Azpect3120/AuthenticationServer/tree/v2.0.0/docs/examples.md]
+
+- `GET /v2/applications/:id` : Get an application by id
+
+- `POST /v2/applications` : Create a new application
+
+- `PATCH /v2/applications/:id` : Update part of an application by id
+
+- `PUT /v2/applications/:id` : Update an entire application by id
+
+- `DELETE /v2/applications/:id` : Delete an application by id
+
 ### Users
 
 
