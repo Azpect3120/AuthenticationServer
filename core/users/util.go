@@ -83,20 +83,15 @@ func getUserColumns(user *model.User) []string {
 }
 
 // Hashes the provided string
-func HashString(str string) (string, error) {
+func HashString(str string) string {
 	hash := sha256.New()
 	if _, err := hash.Write([]byte(str)); err != nil {
-		return "", err
+		return ""
 	}
-	return hex.EncodeToString(hash.Sum(nil)), nil
+	return hex.EncodeToString(hash.Sum(nil))
 }
 
 // Compares the provided hash with the given string
 func CompareHash(str, hash string) bool {
-	if h, err := HashString(str); err != nil {
-		return false
-	} else if h != hash {
-		return false
-	}
-	return true
+	return hash == HashString(str)
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"reflect"
 	"time"
@@ -18,16 +17,16 @@ import (
 )
 
 func main() {
-  if err := godotenv.Load(); err != nil {
-    log.Fatalln(err.Error())
-  }
+	if err := godotenv.Load(); err != nil {
+		fmt.Println(err.Error())
+	}
 
-  port := os.Getenv("AUTH_SERVER_PORT")
-  if port == "" {
-    port = "3000"
-  }
+	port := os.Getenv("AUTH_SERVER_PORT")
+	if port == "" {
+		port = "3000"
+	}
+
 	server := s.NewServer(port)
-
 	db := database.NewDatabase(os.Getenv("DB_URL"))
 
 	// `GET` v2/applications/:id -> Gets an application
@@ -208,33 +207,33 @@ func main() {
 			return
 		}
 
-    appColumns, err := users.GetApplicationColumns(db, user.ApplicationID)
-    if err != nil {
-      ctx.JSON(500, gin.H{"status": 500, "error": err.Error()})
-      return
-    }
+		appColumns, err := users.GetApplicationColumns(db, user.ApplicationID)
+		if err != nil {
+			ctx.JSON(500, gin.H{"status": 500, "error": err.Error()})
+			return
+		}
 
-    providedColumns := make(map[string]string)
+		providedColumns := make(map[string]string)
 
-    for _, col := range appColumns {
-      val := reflect.ValueOf(*user).FieldByName(users.COLUMNS[col])
-      var fieldValue string
-      switch val.Interface().(type) {
-      case uuid.UUID:
-        fieldValue = val.Interface().(uuid.UUID).String()
-      case time.Time:
-        fieldValue = val.Interface().(time.Time).String()
-      default:
-        fieldValue = val.String()
-    }
-      providedColumns[col] = fieldValue
-    }
+		for _, col := range appColumns {
+			val := reflect.ValueOf(*user).FieldByName(users.COLUMNS[col])
+			var fieldValue string
+			switch val.Interface().(type) {
+			case uuid.UUID:
+				fieldValue = val.Interface().(uuid.UUID).String()
+			case time.Time:
+				fieldValue = val.Interface().(time.Time).String()
+			default:
+				fieldValue = val.String()
+			}
+			providedColumns[col] = fieldValue
+		}
 
 		ctx.JSON(code, gin.H{"status": code, "message": "User was created.", "user": providedColumns})
 	})
 
-  // `PATCH` v2/applications/:id/users/:uid -> Updates a user in an application
-  s.AddRoute(server, "patch", "/v2/applications/:id/users/:uid", func(ctx *gin.Context) {
+	// `PATCH` v2/applications/:id/users/:uid -> Updates a user in an application
+	s.AddRoute(server, "patch", "/v2/applications/:id/users/:uid", func(ctx *gin.Context) {
 		id, err := uuid.Parse(ctx.Param("id"))
 		if err != nil {
 			ctx.JSON(400, gin.H{"status": 400, "error": err.Error()})
@@ -247,23 +246,23 @@ func main() {
 			return
 		}
 
-    var req model.UserData
-    if err := ctx.ShouldBindJSON(&req); err != nil {
-      ctx.JSON(404, gin.H{"status": 404, "error": err.Error()})
-      return
-    }
+		var req model.UserData
+		if err := ctx.ShouldBindJSON(&req); err != nil {
+			ctx.JSON(404, gin.H{"status": 404, "error": err.Error()})
+			return
+		}
 
-    user, code, err := users.Update(db, id, uid, &req)
-    if err != nil {
-      ctx.JSON(code, gin.H{"status": code, "error": err.Error()})
-      return
-    }
+		user, code, err := users.Update(db, id, uid, &req)
+		if err != nil {
+			ctx.JSON(code, gin.H{"status": code, "error": err.Error()})
+			return
+		}
 
-    ctx.JSON(code, gin.H{"status": code, "message": "User was updated.", "user": user})
-  })
+		ctx.JSON(code, gin.H{"status": code, "message": "User was updated.", "user": user})
+	})
 
-  // `DELETE` v2/applications/:id/users/:uid -> Delete a user from an application
-  s.AddRoute(server, "delete", "/v2/applications/:id/users/:uid", func(ctx *gin.Context) {
+	// `DELETE` v2/applications/:id/users/:uid -> Delete a user from an application
+	s.AddRoute(server, "delete", "/v2/applications/:id/users/:uid", func(ctx *gin.Context) {
 		id, err := uuid.Parse(ctx.Param("id"))
 		if err != nil {
 			ctx.JSON(400, gin.H{"status": 400, "error": err.Error()})
@@ -276,17 +275,17 @@ func main() {
 			return
 		}
 
-    code, err := users.Delete(db, id, uid)
-    if err != nil {
-      ctx.JSON(code, gin.H{"status": code, "error": err.Error()})
-      return
-    }
+		code, err := users.Delete(db, id, uid)
+		if err != nil {
+			ctx.JSON(code, gin.H{"status": code, "error": err.Error()})
+			return
+		}
 
-    ctx.JSON(204, gin.H{"status": 204, "message": "User was deleted."})
-  })
+		ctx.JSON(204, gin.H{"status": 204, "message": "User was deleted."})
+	})
 
-  // `POST` v2/applications/:id/validation -> Validate a user's login credentials
-  s.AddRoute(server, "post", "/v2/applications/:id/validate", func(ctx *gin.Context) {
+	// `POST` v2/applications/:id/validation -> Validate a user's login credentials
+	s.AddRoute(server, "post", "/v2/applications/:id/validate", func(ctx *gin.Context) {
 		id, err := uuid.Parse(ctx.Param("id"))
 		if err != nil {
 			ctx.JSON(400, gin.H{"status": 400, "error": err.Error()})
@@ -299,18 +298,18 @@ func main() {
 			return
 		}
 
-    user, message, code, err := users.ValidateLogin(db, id, req.Columns, &req.User)
-    if err != nil {
-      ctx.JSON(code, gin.H{"status": code, "message": message, "error": err.Error()})
-      return
-    }
+		user, message, code, err := users.ValidateLogin(db, id, req.Columns, &req.User)
+		if err != nil {
+			ctx.JSON(code, gin.H{"status": code, "message": message, "error": err.Error()})
+			return
+		}
 
-    if message != "" {
-      ctx.JSON(code, gin.H{"status": code, "message": fmt.Sprintf("User credentials were successfully validated. However, %s", message), "user": user})
-      return
-    }
-    ctx.JSON(code, gin.H{"status": code, "message": "User credentials were successfully validated", "user": user})
-  })
+		if message != "" {
+			ctx.JSON(code, gin.H{"status": code, "message": fmt.Sprintf("User credentials were successfully validated. However, %s", message), "user": user})
+			return
+		}
+		ctx.JSON(code, gin.H{"status": code, "message": "User credentials were successfully validated", "user": user})
+	})
 
 	s.Listen(server)
 }
