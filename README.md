@@ -129,7 +129,7 @@ a string, which can be handled on the front end as needed, a stringified JSON ob
 The server will not validate the data stored in the `data` field, it is up to the owner of the server
 to validate and parse the data as needed.
 
-Valid data columns are:
+**Valid data columns are:**
 -  `username` : The username of the user
 -  `first` : The first name of the user
 -  `last` : The last name of the user
@@ -137,6 +137,12 @@ Valid data columns are:
 -  `email` : The email of the user
 -  `password` : The password of the user
 -  `data` : Wild card data field for custom data
+
+All applications have a handful of default columns that cannot be removed and must be left as is.
+These columns are: `id`, `applicationid`, `createdat`, and `lastupdatedat`. The `id` column is the 
+unique identifier for the user. The `applicationid` column is the unique identifier for the application 
+the user is stored in. The `createdat` column is the timestamp of when the user was created. Finally, 
+the `lastupdatedat` column is the timestamp of when the user was last updated.
 
 ### Applications
 
