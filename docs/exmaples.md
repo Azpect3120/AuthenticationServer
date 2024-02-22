@@ -17,6 +17,54 @@
 
 ## Application Examples
 
+### Get All Applications
+```http
+GET /v2/applications
+```
 
+Example Response:
+```json
+{
+  "applications": [
+    {
+      "id": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+      "name": "Test Application",
+      "columns": [
+        "id",
+        "applicationid",
+        "username",
+        "password",
+        "email",
+        "createdat",
+        "lastupdatedat"
+      ],
+      "createdat": "2024-02-17T04:00:24.716294Z",
+      "lastupdatedat": "2024-02-17T04:00:24.716294Z"
+    }
+  ],
+  "count": 1,
+  "status": 200
+}
+```
+
+### Get an Application
+
+### Create an Application
+
+### Update an Application (Part)
+
+### Update an Application (Full)
+
+### Delete an Application
 
 ## User Examples
+
+### Get All Users
+
+### Get a User
+
+### Create a User
+
+### Update a User
+
+### Delete a User
