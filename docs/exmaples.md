@@ -196,31 +196,6 @@ Example Response:
 {
   "application": {
     "id": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
-    "name": "Test Application (UPDATED)",
-    "columns": [
-      "id",
-      "applicationid",
-      "username",
-      "password",
-      "first",
-      "last",
-      "data",
-      "createdat",
-      "lastupdatedat"
-    ],
-    "createdat": "2024-02-17T04:00:24.716294Z",
-    "lastupdatedat": "2024-02-23T19:21:22.832849Z"
-  },
-  "message": "",
-  "status": 200
-}
-```
-
-Example Response:
-```json
-{
-  "application": {
-    "id": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
     "name": "New Test Application",
     "columns": [
       "id",
@@ -250,10 +225,90 @@ No response is returned if successful. (Status 204)
 ## User Examples
 
 ### Get All Users
+Gets a list of all users stored in an application.
+
+```http 
+GET /v2/applications/:id/user
+```
+
+Example Response:
+```json
+{
+  "count": 1,
+  "status": 200,
+  "users": [
+    {
+      "applicationid": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+      "createdat": "2024-02-22 19:36:09.178289 +0000 +0000",
+      "first": "Linus",
+      "id": "a7049085-683d-41ec-a950-df82a622d1ab",
+      "last": "Torvalds",
+      "lastupdatedat": "2024-02-22 19:55:28.782322 +0000 +0000"
+    }
+  ]
+}
+```
 
 ### Get a User
+Gets a single user using their ID.
 
+```http 
+GET /v2/applications/:id/user/:userid
+```
+
+Example Response:
+```json
+{
+  "status": 200,
+  "user": {
+    "applicationid": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "createdat": "2024-02-22 19:36:09.178289 +0000 +0000",
+    "first": "Linus",
+    "id": "a7049085-683d-41ec-a950-df82a622d1ab",
+    "last": "Torvalds",
+    "lastupdatedat": "2024-02-22 19:55:28.782322 +0000 +0000"
+  }
+}
+```
 ### Create a User
+Creates a user in an application. The request body requirements are determined
+by the columns of the application. Valid columns can be found in the 
+[README](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/README.md#overview)
+
+```http 
+POST /v2/applications/:id/user
+```
+
+Request Body:
+- `username` (string) : The username of the user.
+- `first` (string) : The first name of the user.
+- `last` (string) : The last name of the user.
+- `full` (string) : The full name of the user.
+- `email` (string) : The email of the user.
+- `password` (string) : The password of the user.
+- `data` (string) : The data of the user.
+
+```json
+{
+  "first": "Linus",
+  "last": "Torvalds"
+}
+```
+
+Example Response:
+```json
+{
+  "status": 201,
+  "user": {
+    "applicationid": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "id": "a7049085-683d-41ec-a950-df82a622d1ab",
+    "first": "Linus",
+    "last": "Torvalds",
+    "createdat": "2024-02-22 19:36:09.178289 +0000 +0000",
+    "lastupdatedat": "2024-02-22 19:36:09.178289 +0000 +0000"
+  }
+}
+``` 
 
 ### Update a User
 
