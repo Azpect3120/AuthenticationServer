@@ -12,6 +12,7 @@
     -   [Get All Users](#get-all-users)
     -   [Get a User](#get-a-user)
     -   [Create a User](#create-a-user)
+    -   [Validate a User](#validate-a-user)
     -   [Update a User](#update-a-user)
     -   [Delete a User](#delete-a-user)
 
@@ -309,6 +310,50 @@ Example Response:
   }
 }
 ``` 
+
+### Validate a User 
+Validates a user's credentials. The request body should contain the columns to be validated and their values.
+
+```http 
+POST /v2/applications/:id/validate
+```
+
+Request Body:
+- `columns` ([]string) : The columns to be validated. **REQUIRED**
+- `username` (string) : The username of the user.
+- `first` (string) : The first name of the user.
+- `last` (string) : The last name of the user.
+- `full` (string) : The full name of the user.
+- `email` (string) : The email of the user.
+- `password` (string) : The password of the user.
+- `data` (string) : The data of the user.
+
+```json
+{
+  "columns": ["first", "last"],
+  "user": {
+    "first": "Linus",
+    "last": "Torvalds"
+  }
+}
+```
+
+Example Response:
+```json
+{
+  "message": "User credentials were successfully validated",
+  "status": 200,
+  "user": {
+    "applicationid": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "createdat": "2024-02-22 19:36:09.178289 +0000 +0000",
+    "first": "Father",
+    "id": "a7049085-683d-41ec-a950-df82a622d1ab",
+    "last": "Linux",
+    "lastupdatedat": "2024-02-23 20:00:35.239216 +0000 +0000"
+  }
+}
+```
+
 
 ### Update a User
 Updates a user in an application. Fields are not required, only the fields that are to be updated should be included in the request body.

@@ -166,6 +166,8 @@ the `lastupdatedat` column is the timestamp of when the user was last updated.
 
 - `POST /v2/applications/:id/users` : Create a new user in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#create-a-user)
 
+- `POST v2/applications/:id/validate` : Validate a users credentials. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#validate-a-user)
+
 - `PATCH /v2/applications/:id/users/:id` : Update part of a user by id in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#update-a-user)
 
 - `DELETE /v2/applications/:id/users/:id` : Delete a user by id in an application. [e.g](https://github.com/Azpect3120/AuthenticationServer/blob/v2.0.0/docs/exmaples.md#delete-a-user)
