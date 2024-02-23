@@ -28,6 +28,17 @@ func ValidateLogin(db *model.Database, id uuid.UUID, columns []string, user *mod
 		fieldValue = reflect.ValueOf(HashString(fieldValue.String()))
 	}
 
+	for i, col := range columns {
+		switch col {
+		case "first":
+			columns[i] = "firstname"
+		case "last":
+			columns[i] = "lastname"
+		case "full":
+			columns[i] = "fullname"
+		}
+	}
+
 	stmt, err := db.Conn.Prepare(fmt.Sprintf("SELECT * FROM users WHERE applicationid = $1 AND %s = '%s';", columns[0], fieldValue.String()))
 	if err != nil {
 		return nil, message, 500, err
