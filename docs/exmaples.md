@@ -99,7 +99,7 @@ Request Body:
   "columns": [
     "username",
     "password",
-    "email",
+    "email"
   ]
 }
 ```
@@ -126,10 +126,126 @@ Example Response:
 ```
 
 ### Update an Application (Part)
+Updates part of an application. Can be used to ADD columns or update the name.
+```http
+PATCH /v2/applications/:id
+```
+
+Request Body:
+- `name` (string) : The name of the application.
+- `columns` ([]string) : The columns of the application.
+
+```json
+{
+  "name": "Test Application (UPDATED)",
+  "columns": [
+      "data"
+  ]
+}
+```
+
+Example Response:
+```json
+{
+  "application": {
+    "id": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "name": "Test Application (UPDATED)",
+    "columns": [
+      "id",
+      "applicationid",
+      "username",
+      "password",
+      "first",
+      "last",
+      "data",
+      "createdat",
+      "lastupdatedat"
+    ],
+    "createdat": "2024-02-17T04:00:24.716294Z",
+    "lastupdatedat": "2024-02-23T19:21:22.832849Z"
+  },
+  "message": "",
+  "status": 200
+}
+```
 
 ### Update an Application (Full)
+Updates an entire application. Can be used to OVERWRITE columns or update the name.
+Columns provided will be set as the new columns, any columns not provided will be removed.
+
+```http
+PUT /v2/applications/:id
+```
+
+Request Body:
+- `name` (string) : The name of the application. **REQUIRED**
+- `columns` ([]string) : The columns of the application. **REQUIRED(())
+
+```json
+{
+  "name": "New Test Application",
+  "columns": [
+      "first",
+      "last"
+  ]
+}
+```
+
+Example Response:
+```json
+{
+  "application": {
+    "id": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "name": "Test Application (UPDATED)",
+    "columns": [
+      "id",
+      "applicationid",
+      "username",
+      "password",
+      "first",
+      "last",
+      "data",
+      "createdat",
+      "lastupdatedat"
+    ],
+    "createdat": "2024-02-17T04:00:24.716294Z",
+    "lastupdatedat": "2024-02-23T19:21:22.832849Z"
+  },
+  "message": "",
+  "status": 200
+}
+```
+
+Example Response:
+```json
+{
+  "application": {
+    "id": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "name": "New Test Application",
+    "columns": [
+      "id",
+      "applicationid",
+      "first",
+      "last",
+      "createdat",
+      "lastupdatedat"
+    ],
+    "createdat": "2024-02-17T04:00:24.716294Z",
+    "lastupdatedat": "2024-02-23T19:24:22.669494Z"
+  },
+  "message": "",
+  "status": 200
+}
+```
 
 ### Delete an Application
+Deletes an application using its ID.
+
+```http
+DELETE /v2/applications/:id
+```
+
+No response is returned if successful. (Status 204)
 
 ## User Examples
 
