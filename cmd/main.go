@@ -280,7 +280,7 @@ func main() {
 			providedColumns[col] = fieldValue
 		}
 
-		ctx.JSON(code, gin.H{"status": code, "message": "User credentials were successfully validated", "user": providedColumns})
+		ctx.JSON(code, gin.H{"status": code, "user": providedColumns})
 	})
 
 	// `DELETE` v2/applications/:id/users/:uid -> Delete a user from an application

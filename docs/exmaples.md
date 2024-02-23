@@ -311,5 +311,48 @@ Example Response:
 ``` 
 
 ### Update a User
+Updates a user in an application. Fields are not required, only the fields that are to be updated should be included in the request body.
+
+```http
+PATCH /v2/applications/:id/user/:userid
+```
+
+Request Body:
+- `username` (string) : The username of the user.
+- `first` (string) : The first name of the user.
+- `last` (string) : The last name of the user.
+- `full` (string) : The full name of the user.
+- `email` (string) : The email of the user.
+- `password` (string) : The password of the user.
+- `data` (string) : The data of the user.
+
+```json
+{
+  "first": "Father",
+  "last": "Linux"
+}
+```
+
+Example Response:
+```json
+{
+  "status": 200,
+  "user": {
+    "applicationid": "7da29198-4c18-48b4-893a-3ae4b2ddcbc0",
+    "id": "a7049085-683d-41ec-a950-df82a622d1ab",
+    "first": "Father",
+    "last": "Linux",
+    "createdat": "2024-02-22 19:36:09.178289 +0000 +0000",
+    "lastupdatedat": "2024-02-23 20:00:35.239216 +0000 +0000"
+  }
+}
+```
 
 ### Delete a User
+Delets a user in an application using their ID.
+
+```http 
+DELETE /v2/applications/:id/user/:userid
+```
+
+No response is returned if successful. (Status 204)
